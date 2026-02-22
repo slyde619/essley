@@ -1,8 +1,11 @@
-import { useEffect, useRef, useReducer, useCallback } from "react";
+import { useEffect, useRef, useReducer } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
-import { getSchemaForStep } from "@/schemas/modalFormSchemas";
+import {
+  getSchemaForStep,
+  completeMandateSchema,
+  completeSpeakSchema,
+} from "@/schemas/modalFormSchemas";
 import { useFormPersistence } from "@/hooks/useFormPersistence";
 import ModalSidebar from "./modal/ModalSidebar";
 import StepIndicator from "./modal/StepIndicator";
@@ -78,40 +81,21 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
   const totalSteps = type === "mandate" ? 3 : 2;
   const progressWidth = `${(currentStep / totalSteps) * 100}%`;
 
-  // Use a ref to always hold the latest schema so the resolver stays current
-  const schemaRef = useRef(getSchemaForStep(type, currentStep));
-
-  // Update the schema ref whenever step or type changes
-  useEffect(() => {
-    schemaRef.current = getSchemaForStep(type, currentStep);
-  }, [type, currentStep]);
-
-  // Dynamic resolver that always validates against the current step's schema
-  const dynamicResolver = useCallback(async (values, context, options) => {
-    const resolver = zodResolver(schemaRef.current);
-    return resolver(values, context, options);
-  }, []);
-
-  // Initialize react-hook-form with dynamic Zod validation
+  // Initialize react-hook-form WITHOUT zodResolver
+  // Validation is handled manually per-step using Zod's safeParse
   const {
     register,
-    handleSubmit: handleFormSubmit,
     formState: { errors, isSubmitting },
     setValue,
+    setError,
     watch,
-    trigger,
     reset,
     clearErrors,
+    getValues,
   } = useForm({
-    resolver: dynamicResolver,
     mode: "onBlur",
     defaultValues: formData,
   });
-
-  // Clear errors when step changes so stale errors from previous step don't persist
-  useEffect(() => {
-    clearErrors();
-  }, [currentStep, clearErrors]);
 
   // Watch specific fields for UI reactivity
   const watchedProducts = watch("products");
@@ -127,7 +111,7 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
     });
     return () => subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // watch is stable and doesn't need to be in dependencies
+  }, []);
 
   // Form persistence
   const { clearPersistedData, saveImmediately } = useFormPersistence(
@@ -135,13 +119,12 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
     formData,
     (newData) => {
       dispatch({ type: "SET_FORM_DATA", payload: newData });
-      // Update react-hook-form values
       Object.keys(newData).forEach((key) => {
         setValue(key, newData[key]);
       });
     },
     isOpen,
-    500, // debounce 500ms
+    500,
   );
 
   useEffect(() => {
@@ -154,7 +137,6 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
     } else {
       dialog.close();
       document.body.style.overflow = "";
-      // Reset on close
       setTimeout(() => {
         dispatch({ type: "RESET" });
         reset(initialFormData);
@@ -169,7 +151,6 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
     }
   };
 
-  // Accessibility helper for keyboard navigation
   const handleKeyPress = (callback) => (e) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -182,56 +163,106 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
     const newValue = currentValue.includes(value)
       ? currentValue.filter((item) => item !== value)
       : [...currentValue, value];
-    setValue(field, newValue, { shouldValidate: true, shouldDirty: true });
+    setValue(field, newValue, { shouldDirty: true });
+  };
+
+  /**
+   * Validate only the current step's fields using Zod's safeParse.
+   * Maps errors back to react-hook-form via setError so ErrorMessage components work.
+   */
+  const validateCurrentStep = () => {
+    const schema = getSchemaForStep(type, currentStep);
+    const allValues = getValues();
+
+    // Pick only the fields relevant to the current step
+    const stepFieldNames = Object.keys(schema.shape);
+    const stepValues = {};
+    stepFieldNames.forEach((key) => {
+      stepValues[key] = allValues[key];
+    });
+
+    // Clear only this step's field errors before re-validating
+    clearErrors(stepFieldNames);
+
+    const result = schema.safeParse(stepValues);
+
+    if (!result.success) {
+      result.error.errors.forEach((err) => {
+        const fieldName = err.path.join(".");
+        setError(fieldName, {
+          type: "manual",
+          message: err.message,
+        });
+      });
+      return false;
+    }
+
+    return true;
   };
 
   const handleNext = async () => {
-    // Validate current step before proceeding
-    const isValid = await trigger();
+    const isValid = validateCurrentStep();
 
     if (isValid) {
       if (currentStep < totalSteps) {
         dispatch({ type: "NEXT_STEP" });
-        saveImmediately(); // Save progress when moving to next step
-        // Scroll to top of form
+        saveImmediately();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } else {
-      // Scroll to first error
-      const firstError = Object.keys(errors)[0];
-      if (firstError) {
-        const element = document.getElementsByName(firstError)[0];
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "center" });
-          element.focus();
+      // Scroll to first error element
+      setTimeout(() => {
+        const firstErrorEl = document.querySelector(".error");
+        if (firstErrorEl) {
+          firstErrorEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          firstErrorEl.focus();
         }
-      }
+      }, 50);
     }
   };
 
   const handleBack = () => {
     if (currentStep > 1) {
+      clearErrors();
       dispatch({ type: "PREV_STEP" });
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
-  const handleSubmit = async (validatedData) => {
-    try {
-      // Generate reference number
-      const refNum = Math.floor(100000 + Math.random() * 900000);
+  const handleSubmit = async () => {
+    // Validate the current (final) step first
+    const isStepValid = validateCurrentStep();
+    if (!isStepValid) return;
 
-      // Here you would typically send the data to your backend
-      console.log("Form submitted");
+    // Full-form validation as a safety net
+    const completeSchema =
+      type === "mandate" ? completeMandateSchema : completeSpeakSchema;
+    const allValues = getValues();
+    const result = completeSchema.safeParse(allValues);
+
+    if (!result.success) {
+      console.error("Full form validation failed:", result.error.errors);
+      result.error.errors.forEach((err) => {
+        const fieldName = err.path.join(".");
+        setError(fieldName, {
+          type: "manual",
+          message: err.message,
+        });
+      });
+      return;
+    }
+
+    try {
+      const refNum = Math.floor(100000 + Math.random() * 900000);
+      console.log("Form submitted:", { ...result.data, reference: refNum });
 
       // TODO: Replace with actual API call
-      // await submitFormData({ ...validatedData, reference: refNum });
+      // await submitFormData({ ...result.data, reference: refNum });
 
       dispatch({ type: "SET_SUCCESS", payload: true });
-      clearPersistedData(); // Clear saved data after successful submission
+      clearPersistedData();
     } catch (error) {
       console.error("Form submission error:", error);
-      // Handle submission error (show error message to user)
     }
   };
 
@@ -257,10 +288,8 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
       >
-        {/* Scan line animation */}
         <div className="modal-scan" />
 
-        {/* Progress bar */}
         <div className="modal-progress">
           <div
             className="modal-progress-bar"
@@ -269,10 +298,8 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
         </div>
 
         <div className="modal-inner">
-          {/* SIDEBAR */}
           <ModalSidebar type={type} />
 
-          {/* CONTENT */}
           <div className="modal-content">
             <header className="modal-header">
               <StepIndicator
@@ -289,12 +316,10 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
               </button>
             </header>
 
-            {/* SUCCESS STATE */}
             {showSuccess ? (
               <SuccessState type={type} onClose={onClose} />
             ) : (
               <>
-                {/* MANDATE FORMS */}
                 {type === "mandate" && (
                   <>
                     {currentStep === 1 && (
@@ -323,14 +348,13 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
                         register={register}
                         errors={errors}
                         isSubmitting={isSubmitting}
-                        onSubmit={handleFormSubmit(handleSubmit)}
+                        onSubmit={handleSubmit}
                         onBack={handleBack}
                       />
                     )}
                   </>
                 )}
 
-                {/* SPEAK FORMS */}
                 {type === "speak" && (
                   <>
                     {currentStep === 1 && (
@@ -354,7 +378,7 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
                         setValue={setValue}
                         isSubmitting={isSubmitting}
                         handleKeyPress={handleKeyPress}
-                        onSubmit={handleFormSubmit(handleSubmit)}
+                        onSubmit={handleSubmit}
                         onBack={handleBack}
                       />
                     )}
