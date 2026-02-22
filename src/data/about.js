@@ -68,7 +68,7 @@ export const timeline = [
     title: "Foundation",
     description:
       "Essley Trading established with focus on structured crude oil intermediation",
-    tags: ["Company Launch", "Nigeria Focus"],
+    tags: ["Company Launch", "USA Focus"],
   },
   {
     year: "2015",
@@ -185,14 +185,22 @@ export const leadership = [
     name: "Chief Executive",
     role: "Strategic Leadership",
     bio: "15+ years in international energy trade and structured transaction facilitation. Led cross-border crude oil deals across West Africa, Asia, and Europe.",
-    expertise: ["Transaction Strategy", "Regulatory Compliance", "Stakeholder Management"],
+    expertise: [
+      "Transaction Strategy",
+      "Regulatory Compliance",
+      "Stakeholder Management",
+    ],
   },
   {
     initials: "CO",
     name: "Chief Operations",
     role: "Operational Excellence",
     bio: "Former operations director at multinational trading firm. Expert in documentation workflows, logistics coordination, and compliance protocols.",
-    expertise: ["Process Optimization", "Documentation Control", "Logistics Coordination"],
+    expertise: [
+      "Process Optimization",
+      "Documentation Control",
+      "Logistics Coordination",
+    ],
   },
   {
     initials: "CC",
@@ -214,7 +222,8 @@ export const globalRegions = [
   },
   {
     region: "Europe",
-    description: "Established buyer relationships and compliance infrastructure",
+    description:
+      "Established buyer relationships and compliance infrastructure",
   },
   {
     region: "Middle East",

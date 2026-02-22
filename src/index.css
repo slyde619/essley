@@ -79,6 +79,7 @@
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
   h1,
@@ -182,7 +183,8 @@ html {
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
@@ -267,6 +269,14 @@ html {
   pointer-events: all;
 }
 
+/* On mobile, override the centered transform since we use inset:0 */
+@media (max-width: 768px) {
+  .modal-dialog[open] .modal-panel {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
 .modal-dialog::backdrop {
   background: hsl(222 55% 2% / 0.82);
   backdrop-filter: blur(12px) saturate(0.6);
@@ -285,7 +295,9 @@ html {
   overflow: hidden;
   transform: translateY(40px) scale(0.97);
   opacity: 0;
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.5s ease;
   max-height: 92vh;
   overflow-y: auto;
   scrollbar-width: thin;
@@ -376,6 +388,13 @@ html {
   display: grid;
   grid-template-columns: 280px 1fr;
   min-height: 560px;
+}
+
+@media (max-width: 768px) {
+  .modal-inner {
+    overflow-y: auto;
+    min-height: auto;
+  }
 }
 
 /* Progress Bar */
@@ -563,7 +582,9 @@ html {
   width: 24px;
   height: 2px;
   background: var(--color-border);
-  transition: background 0.3s, width 0.3s;
+  transition:
+    background 0.3s,
+    width 0.3s;
 }
 
 .step-dot.active {
@@ -585,7 +606,10 @@ html {
   align-items: center;
   justify-content: center;
   color: var(--color-muted-foreground);
-  transition: border-color 0.25s, color 0.25s, background 0.25s;
+  transition:
+    border-color 0.25s,
+    color 0.25s,
+    background 0.25s;
   flex-shrink: 0;
 }
 
@@ -676,7 +700,10 @@ html {
   font-size: 0.88rem;
   padding: 12px 14px;
   outline: none;
-  transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+  transition:
+    border-color 0.25s,
+    background 0.25s,
+    box-shadow 0.25s;
   width: 100%;
   appearance: none;
   border-radius: 0;
@@ -692,7 +719,9 @@ html {
 .field textarea:focus {
   border-color: var(--color-primary);
   background: hsl(25 100% 41% / 0.04);
-  box-shadow: 0 0 0 3px hsl(25 100% 41% / 0.08), 0 2px 0 var(--color-primary);
+  box-shadow:
+    0 0 0 3px hsl(25 100% 41% / 0.08),
+    0 2px 0 var(--color-primary);
 }
 
 .field textarea {
@@ -706,6 +735,30 @@ html {
 
 .field select option {
   background: var(--color-charcoal);
+}
+
+/* Error states */
+.field input.error,
+.field select.error,
+.field textarea.error {
+  border-color: hsl(0 84% 60%);
+  background: hsl(0 84% 60% / 0.04);
+}
+
+.field input.error:focus,
+.field select.error:focus,
+.field textarea.error:focus {
+  border-color: hsl(0 84% 60%);
+  box-shadow:
+    0 0 0 3px hsl(0 84% 60% / 0.12),
+    0 2px 0 hsl(0 84% 60%);
+}
+
+.btn-next:disabled,
+.btn-back:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* Field accent bar */
@@ -740,7 +793,10 @@ html {
   border: 1px solid var(--color-border);
   padding: 8px 14px;
   cursor: pointer;
-  transition: border-color 0.25s, color 0.25s, background 0.25s;
+  transition:
+    border-color 0.25s,
+    color 0.25s,
+    background 0.25s;
   user-select: none;
 }
 
@@ -844,7 +900,10 @@ html {
   padding: 10px 8px;
   cursor: pointer;
   text-align: center;
-  transition: border-color 0.25s, color 0.25s, background 0.25s;
+  transition:
+    border-color 0.25s,
+    color 0.25s,
+    background 0.25s;
   user-select: none;
 }
 
@@ -872,7 +931,9 @@ html {
   padding: 16px 12px;
   cursor: pointer;
   text-align: center;
-  transition: border-color 0.25s, background 0.25s;
+  transition:
+    border-color 0.25s,
+    background 0.25s;
   user-select: none;
 }
 
@@ -920,7 +981,10 @@ html {
   border: 1px solid var(--color-border);
   padding: 7px 14px;
   cursor: pointer;
-  transition: border-color 0.25s, color 0.25s, background 0.25s;
+  transition:
+    border-color 0.25s,
+    color 0.25s,
+    background 0.25s;
   user-select: none;
 }
 
@@ -969,7 +1033,9 @@ html {
   border: 1px solid var(--color-border);
   padding: 11px 24px;
   cursor: pointer;
-  transition: border-color 0.25s, color 0.25s;
+  transition:
+    border-color 0.25s,
+    color 0.25s;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -993,7 +1059,9 @@ html {
   display: flex;
   align-items: center;
   gap: 10px;
-  transition: box-shadow 0.3s, transform 0.2s;
+  transition:
+    box-shadow 0.3s,
+    transform 0.2s;
   position: relative;
   overflow: hidden;
 }
@@ -1151,7 +1219,9 @@ html {
   border: 1px solid var(--color-border);
   padding: 12px 28px;
   cursor: pointer;
-  transition: border-color 0.25s, color 0.25s;
+  transition:
+    border-color 0.25s,
+    color 0.25s;
 }
 
 .btn-close-success:hover {
@@ -1183,9 +1253,24 @@ html {
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+
+/* Tablets and below - Hide sidebar, show only on xl screens (1280px+) */
+@media (max-width: 1279px) {
+  .modal-dialog {
+    width: 100%;
+    max-width: 100vw;
+    padding: 16px;
+  }
+
+  .modal-panel {
+    max-width: 680px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
   .modal-inner {
     grid-template-columns: 1fr;
+    min-height: auto;
   }
 
   .modal-sidebar {
@@ -1193,24 +1278,553 @@ html {
   }
 
   .modal-content {
-    padding: 28px 24px;
+    padding: 32px 28px;
+  }
+}
+
+/* Small tablets and large phones */
+@media (max-width: 768px) {
+  .modal-dialog {
+    padding: 0;
+    width: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
+    max-height: 100dvh;
+    top: 0;
+    left: 0;
+    transform: none;
+    inset: 0;
+  }
+
+  .modal-panel {
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    height: 100%;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
+  }
+
+  .modal-inner {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .modal-content {
+    padding: 24px 20px;
+    overflow-y: auto;
+    flex: 1;
   }
 
   .form-grid {
     grid-template-columns: 1fr;
+    gap: 14px;
   }
 
   .contact-method-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
   }
 
   .time-slots {
     grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .product-pills {
+    gap: 6px;
+  }
+
+  .product-pill {
+    font-size: 0.68rem;
+    padding: 10px 14px;
+  }
+
+  .priority-flags {
+    gap: 6px;
+  }
+
+  .priority-flag {
+    font-size: 0.65rem;
+    padding: 9px 14px;
+  }
+
+  .step-heading {
+    font-size: 1.15rem;
+  }
+
+  .step-subheading {
+    font-size: 0.68rem;
+    margin-bottom: 24px;
+  }
+
+  .field label {
+    font-size: 0.65rem;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    font-size: 0.9rem;
+    padding: 13px 14px;
+  }
+
+  .field textarea {
+    min-height: 120px;
+  }
+
+  .volume-display {
+    font-size: 1.5rem;
+  }
+
+  .modal-header {
+    margin-bottom: 24px;
+  }
+
+  .form-footer {
+    margin-top: 24px;
+    padding-top: 20px;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-footer-left {
+    order: 2;
+    text-align: center;
+  }
+
+  .form-footer-right {
+    order: 1;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .btn-back,
+  .btn-next {
+    flex: 1;
+    justify-content: center;
+    padding: 13px 20px;
+    font-size: 0.68rem;
+  }
+
+  .modal-close {
+    width: 32px;
+    height: 32px;
+  }
+
+  .step-dot {
+    width: 20px;
+  }
+
+  .step-dot.active {
+    width: 30px;
+  }
+
+  .success-state {
+    padding: 32px 16px;
+  }
+
+  .success-icon-wrap {
+    width: 64px;
+    height: 64px;
+  }
+
+  .success-title {
+    font-size: 1.4rem;
+  }
+
+  .success-desc {
+    font-size: 0.85rem;
+  }
+
+  .success-next-steps {
+    padding: 16px 20px;
   }
 }
 
+/* Mobile phones */
 @media (max-width: 480px) {
+  .modal-dialog {
+    padding: 0;
+    max-width: 100%;
+  }
+
+  .modal-panel {
+    max-width: 100%;
+    max-height: 100vh;
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+
   .modal-content {
-    padding: 24px 18px;
+    padding: 20px 16px;
+  }
+
+  .form-grid {
+    gap: 12px;
+  }
+
+  .contact-method-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .contact-method {
+    padding: 14px 12px;
+  }
+
+  .time-slots {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .time-slot {
+    padding: 12px 10px;
+    font-size: 0.7rem;
+  }
+
+  .product-pills {
+    flex-direction: column;
+  }
+
+  .product-pill {
+    width: 100%;
+    text-align: center;
+    padding: 12px 16px;
+    font-size: 0.7rem;
+  }
+
+  .priority-flags {
+    flex-direction: column;
+  }
+
+  .priority-flag {
+    width: 100%;
+    text-align: center;
+    padding: 11px 16px;
+    font-size: 0.68rem;
+  }
+
+  .step-heading {
+    font-size: 1rem;
+  }
+
+  .step-subheading {
+    font-size: 0.65rem;
+    margin-bottom: 20px;
+  }
+
+  .field label {
+    font-size: 0.68rem;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    font-size: 0.92rem;
+    padding: 14px 12px;
+  }
+
+  .field textarea {
+    min-height: 140px;
+  }
+
+  .volume-display {
+    font-size: 1.3rem;
+  }
+
+  .volume-labels {
+    font-size: 0.55rem;
+  }
+
+  .modal-header {
+    margin-bottom: 20px;
+  }
+
+  .modal-step-indicator {
+    font-size: 0.58rem;
+  }
+
+  .form-footer {
+    margin-top: 20px;
+    padding-top: 16px;
+  }
+
+  .form-footer-left {
+    font-size: 0.58rem;
+  }
+
+  .form-footer-right {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-back,
+  .btn-next {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 0.7rem;
+  }
+
+  .modal-close {
+    width: 30px;
+    height: 30px;
+  }
+
+  .step-dots {
+    gap: 4px;
+  }
+
+  .step-dot {
+    width: 16px;
+  }
+
+  .step-dot.active {
+    width: 24px;
+  }
+
+  .success-state {
+    padding: 24px 12px;
+  }
+
+  .success-icon-wrap {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 20px;
+  }
+
+  .success-title {
+    font-size: 1.2rem;
+  }
+
+  .success-ref {
+    font-size: 0.6rem;
+  }
+
+  .success-desc {
+    font-size: 0.82rem;
+    max-width: 100%;
+  }
+
+  .success-next-steps {
+    padding: 14px 16px;
+    max-width: 100%;
+  }
+
+  .success-next-steps h4 {
+    font-size: 0.58rem;
+  }
+
+  .success-next-steps ul li {
+    font-size: 0.75rem;
+  }
+
+  .btn-close-success {
+    width: 100%;
+    padding: 14px 24px;
+  }
+
+  .field-group {
+    margin-bottom: 16px;
+  }
+
+  .mb-20 {
+    margin-bottom: 16px;
+  }
+
+  .mb-16 {
+    margin-bottom: 12px;
+  }
+
+  /* Adjust corner accents for mobile */
+  .modal-panel::before,
+  .modal-panel::after {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Make touch targets larger */
+  .contact-method-icon {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+  }
+
+  .contact-method-name {
+    font-size: 0.65rem;
+  }
+}
+
+/* Very small phones (landscape or older devices) */
+@media (max-width: 360px) {
+  .modal-content {
+    padding: 16px 12px;
+  }
+
+  .step-heading {
+    font-size: 0.95rem;
+  }
+
+  .volume-display {
+    font-size: 1.1rem;
+  }
+
+  .volume-labels {
+    font-size: 0.52rem;
+    gap: 2px;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    font-size: 0.9rem;
+    padding: 12px 10px;
+  }
+
+  .product-pill,
+  .priority-flag {
+    font-size: 0.68rem;
+    padding: 10px 12px;
+  }
+}
+
+/* Landscape mode optimizations for phones */
+@media (max-height: 600px) and (orientation: landscape) {
+  .modal-panel {
+    max-height: 98vh;
+  }
+
+  .modal-content {
+    padding: 16px 20px;
+  }
+
+  .modal-header {
+    margin-bottom: 16px;
+  }
+
+  .step-heading {
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  .step-subheading {
+    margin-bottom: 16px;
+  }
+
+  .form-grid {
+    gap: 10px;
+  }
+
+  .field {
+    gap: 5px;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    padding: 10px 12px;
+  }
+
+  .field textarea {
+    min-height: 80px;
+  }
+
+  .field-group {
+    margin-bottom: 14px;
+  }
+
+  .mb-20 {
+    margin-bottom: 14px;
+  }
+
+  .mb-16 {
+    margin-bottom: 10px;
+  }
+
+  .form-footer {
+    margin-top: 16px;
+    padding-top: 14px;
+  }
+
+  .btn-back,
+  .btn-next {
+    padding: 10px 16px;
+  }
+
+  .volume-track {
+    padding: 8px 0 2px;
+  }
+
+  .volume-labels {
+    margin-top: 4px;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase touch target sizes */
+  .product-pill,
+  .priority-flag,
+  .time-slot,
+  .contact-method {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Better focus states for accessibility */
+  .product-pill:active,
+  .priority-flag:active,
+  .time-slot:active,
+  .contact-method:active {
+    transform: scale(0.97);
+    transition: transform 0.1s;
+  }
+
+  /* Disable hover animations on touch devices */
+  .modal-close:hover,
+  .btn-back:hover,
+  .btn-next:hover,
+  .product-pill:hover,
+  .priority-flag:hover,
+  .time-slot:hover,
+  .contact-method:hover {
+    transform: none;
+  }
+
+  /* Prevent iOS zoom on input focus (16px min font-size) */
+  .field input,
+  .field select,
+  .field textarea {
+    font-size: 16px;
+  }
+
+  /* Prevent momentum scrolling issues on iOS */
+  .modal-panel {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  /* Fix for iOS Safari bottom bar overlap */
+  @media (max-width: 768px) {
+    .modal-dialog {
+      max-height: 100dvh;
+    }
+
+    .modal-panel {
+      max-height: 100dvh;
+      height: 100dvh;
+    }
+  }
+
+  /* Prevent rubber band scrolling on modal */
+  .modal-dialog {
+    overscroll-behavior: contain;
+  }
+
+  .modal-content {
+    overscroll-behavior: contain;
   }
 }

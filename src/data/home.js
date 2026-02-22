@@ -42,15 +42,11 @@ export const roleItems = [
 ];
 
 export const products = [
-  { name: "Bonny Light Crude", origin: "Nigeria", api: "32–36° API" },
-  { name: "Brent Crude", origin: "North Sea", api: "38° API" },
-  { name: "Jet Fuel A1", origin: "Multi-origin", api: "Aviation Grade" },
-  { name: "EN590", origin: "European Standard", api: "Diesel Grade" },
-  {
-    name: "D6 Virgin Fuel Oil",
-    origin: "Multi-origin",
-    api: "Industrial Grade",
-  },
+  { name: "Virgin Fuel Oil D6", origin: "Multi-origin", api: "Industrial Grade" },
+  { name: "EN-590 Diesel (ULSD)", origin: "European Standard", api: "Diesel Grade" },
+  { name: "LNG (Liquefied Natural Gas)", origin: "Multi-origin", api: "Cryogenic Grade" },
+  { name: "Jet Fuel (Jet A1)", origin: "Multi-origin", api: "Aviation Grade" },
+  { name: "WTI – West Texas Intermediate", origin: "United States", api: "39.6° API" },
 ];
 
 export const processSteps = [
