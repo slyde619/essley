@@ -99,6 +99,17 @@ const MandateStep1 = ({ register, errors, onNext }) => {
           <ErrorMessage error={errors.registrationNumber} />
         </div>
       </div>
+
+      <div className="form-footer">
+        <div className="form-footer-left">
+          All information is held in strict confidence
+        </div>
+        <div className="form-footer-right">
+          <button className="btn-next" onClick={onNext}>
+            Continue <ArrowRight size={14} />
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
