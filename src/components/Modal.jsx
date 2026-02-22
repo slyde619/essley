@@ -1,4 +1,4 @@
-import { useEffect, useRef, useReducer } from "react";
+import { useEffect, useRef, useReducer, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
@@ -78,10 +78,21 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
   const totalSteps = type === "mandate" ? 3 : 2;
   const progressWidth = `${(currentStep / totalSteps) * 100}%`;
 
-  // Get current schema for validation
-  const currentSchema = getSchemaForStep(type, currentStep);
+  // Use a ref to always hold the latest schema so the resolver stays current
+  const schemaRef = useRef(getSchemaForStep(type, currentStep));
 
-  // Initialize react-hook-form with Zod validation
+  // Update the schema ref whenever step or type changes
+  useEffect(() => {
+    schemaRef.current = getSchemaForStep(type, currentStep);
+  }, [type, currentStep]);
+
+  // Dynamic resolver that always validates against the current step's schema
+  const dynamicResolver = useCallback(async (values, context, options) => {
+    const resolver = zodResolver(schemaRef.current);
+    return resolver(values, context, options);
+  }, []);
+
+  // Initialize react-hook-form with dynamic Zod validation
   const {
     register,
     handleSubmit: handleFormSubmit,
@@ -90,11 +101,17 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
     watch,
     trigger,
     reset,
+    clearErrors,
   } = useForm({
-    resolver: zodResolver(currentSchema),
+    resolver: dynamicResolver,
     mode: "onBlur",
     defaultValues: formData,
   });
+
+  // Clear errors when step changes so stale errors from previous step don't persist
+  useEffect(() => {
+    clearErrors();
+  }, [currentStep, clearErrors]);
 
   // Watch specific fields for UI reactivity
   const watchedProducts = watch("products");
@@ -124,7 +141,7 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
       });
     },
     isOpen,
-    500 // debounce 500ms
+    500, // debounce 500ms
   );
 
   useEffect(() => {
@@ -205,7 +222,7 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
       const refNum = Math.floor(100000 + Math.random() * 900000);
 
       // Here you would typically send the data to your backend
-      console.log("Form submitted:", { ...validatedData, reference: refNum });
+      console.log("Form submitted");
 
       // TODO: Replace with actual API call
       // await submitFormData({ ...validatedData, reference: refNum });

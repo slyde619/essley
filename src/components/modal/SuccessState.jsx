@@ -10,10 +10,8 @@ const SuccessState = ({ type, onClose }) => {
         REF: {type === "mandate" ? "EST" : "CON"}-
         {Math.floor(100000 + Math.random() * 900000)}
       </div>
-      <h3 className="success-title">
-        {type === "mandate"
-          ? "Mandate Received"
-          : "Request Confirmed"}
+      <h3 className="success-title text-zinc-100">
+        {type === "mandate" ? "Mandate Received" : "Request Confirmed"}
       </h3>
       <p className="success-desc">
         {type === "mandate"
@@ -22,47 +20,45 @@ const SuccessState = ({ type, onClose }) => {
       </p>
       <div className="success-next-steps">
         <h4>
-          {type === "mandate"
-            ? "What Happens Next"
-            : "Consultation Protocol"}
+          {type === "mandate" ? "What Happens Next" : "Consultation Protocol"}
         </h4>
         <ul>
           {type === "mandate" ? (
             <>
               <li>
-                <span className="sn">01</span> Compliance team
-                initiates KYC review of your entity
+                <span className="sn">01</span> Compliance team initiates KYC
+                review of your entity
               </li>
               <li>
-                <span className="sn">02</span> Financial capacity and
-                mandate authenticity verified
+                <span className="sn">02</span> Financial capacity and mandate
+                authenticity verified
               </li>
               <li>
-                <span className="sn">03</span> Qualified buyers
-                receive formal SCO from seller mandate
+                <span className="sn">03</span> Qualified buyers receive formal
+                SCO from seller mandate
               </li>
               <li>
-                <span className="sn">04</span> ICPO exchange and SPA
-                process commences
+                <span className="sn">04</span> ICPO exchange and SPA process
+                commences
               </li>
             </>
           ) : (
             <>
               <li>
-                <span className="sn">01</span> Confirmation email sent
-                within 2 business hours
+                <span className="sn">01</span> Confirmation email sent within 2
+                business hours
               </li>
               <li>
-                <span className="sn">02</span> NDA executed prior to
-                discussion commencement
+                <span className="sn">02</span> NDA executed prior to discussion
+                commencement
               </li>
               <li>
-                <span className="sn">03</span> Senior specialist
-                assigned to your enquiry
+                <span className="sn">03</span> Senior specialist assigned to
+                your enquiry
               </li>
               <li>
-                <span className="sn">04</span> Follow-up documentation
-                provided post-call
+                <span className="sn">04</span> Follow-up documentation provided
+                post-call
               </li>
             </>
           )}

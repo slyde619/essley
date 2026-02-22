@@ -4,43 +4,39 @@ import { z } from "zod";
 export const mandateStep1Schema = z.object({
   fullName: z
     .string()
+    .trim()
     .min(2, "Full name must be at least 2 characters")
-    .max(100, "Full name must be less than 100 characters")
-    .trim(),
+    .max(100, "Full name must be less than 100 characters"),
   title: z
     .string()
+    .trim()
     .min(2, "Title must be at least 2 characters")
-    .max(100, "Title must be less than 100 characters")
-    .trim(),
+    .max(100, "Title must be less than 100 characters"),
   company: z
     .string()
+    .trim()
     .min(2, "Company name must be at least 2 characters")
-    .max(200, "Company name must be less than 200 characters")
-    .trim(),
+    .max(200, "Company name must be less than 200 characters"),
   country: z
     .string()
+    .trim()
     .min(2, "Country must be at least 2 characters")
-    .max(100, "Country must be less than 100 characters")
-    .trim(),
+    .max(100, "Country must be less than 100 characters"),
   email: z
     .string()
-    .email("Please enter a valid corporate email")
-    .transform((email) => email.toLowerCase().trim()),
+    .trim()
+    .min(1, "Email is required")
+    .email("Please enter a valid corporate email"),
   phone: z
     .string()
+    .trim()
     .min(10, "Phone number must be at least 10 characters")
-    .max(20, "Phone number must be less than 20 characters")
-    .refine((phone) => {
-      const cleaned = phone.replace(/[\s()-]/g, "");
-      return cleaned.length >= 10 && /^\+?[0-9]+$/.test(cleaned);
-    }, {
-      message: "Please enter a valid phone number",
-    }),
+    .max(20, "Phone number must be less than 20 characters"),
   registrationNumber: z
     .string()
+    .trim()
     .min(3, "Registration number must be at least 3 characters")
-    .max(50, "Registration number must be less than 50 characters")
-    .trim(),
+    .max(50, "Registration number must be less than 50 characters"),
 });
 
 export const mandateStep2Schema = z.object({
@@ -54,65 +50,31 @@ export const mandateStep2Schema = z.object({
     .max(5000000, "Maximum volume is 5,000,000 BBL"),
   deliveryTerms: z
     .string()
-    .min(1, "Please select delivery terms")
-    .refine((val) => ["fob", "cif", "either"].includes(val), {
-      message: "Invalid delivery terms selected",
-    }),
+    .min(1, "Please select delivery terms"),
   destinationPort: z
     .string()
+    .trim()
     .min(2, "Destination port must be at least 2 characters")
-    .max(200, "Destination port must be less than 200 characters")
-    .trim(),
+    .max(200, "Destination port must be less than 200 characters"),
   contractDuration: z
     .string()
-    .min(1, "Please select contract duration")
-    .refine((val) => ["spot", "3m", "6m", "12m", "24m"].includes(val), {
-      message: "Invalid contract duration selected",
-    }),
+    .min(1, "Please select contract duration"),
 });
 
 export const mandateStep3Schema = z.object({
   financialInstrument: z
     .string()
-    .min(1, "Please select a financial instrument")
-    .refine(
-      (val) => ["lc", "sblc", "bcl", "pof", "tt", "undisclosed"].includes(val),
-      {
-        message: "Invalid financial instrument selected",
-      },
-    ),
+    .min(1, "Please select a financial instrument"),
   endUse: z
     .string()
-    .min(1, "Please select end-use")
-    .refine(
-      (val) =>
-        [
-          "refinery",
-          "power",
-          "aviation",
-          "industrial",
-          "marine",
-          "distribution",
-          "government",
-        ].includes(val),
-      {
-        message: "Invalid end-use selected",
-      },
-    ),
+    .min(1, "Please select end-use"),
   source: z
     .string()
-    .min(1, "Please select how you heard about us")
-    .refine(
-      (val) =>
-        ["referral", "search", "event", "linkedin", "other"].includes(val),
-      {
-        message: "Invalid source selected",
-      },
-    ),
+    .min(1, "Please select how you heard about us"),
   notes: z
     .string()
-    .max(1000, "Notes must be less than 1000 characters")
     .trim()
+    .max(1000, "Notes must be less than 1000 characters")
     .optional()
     .or(z.literal("")),
 });
@@ -126,33 +88,27 @@ export const completeMandateSchema = mandateStep1Schema
 export const speakStep1Schema = z.object({
   fullName: z
     .string()
+    .trim()
     .min(2, "Full name must be at least 2 characters")
-    .max(50, "Full name must be less than 50 characters")
-    .trim(),
+    .max(50, "Full name must be less than 50 characters"),
   company: z
     .string()
+    .trim()
     .min(2, "Company name must be at least 2 characters")
-    .max(50, "Company name must be less than 50 characters")
-    .trim(),
+    .max(50, "Company name must be less than 50 characters"),
   email: z
     .string()
-    .email("Please enter a valid email")
-    .transform((email) => email.toLowerCase().trim()),
+    .trim()
+    .min(1, "Email is required")
+    .email("Please enter a valid email"),
   phone: z
     .string()
+    .trim()
     .min(10, "Phone number must be at least 10 characters")
-    .max(20, "Phone number must be less than 20 characters")
-    .refine((phone) => {
-      const cleaned = phone.replace(/[\s()-]/g, "");
-      return cleaned.length >= 10 && /^\+?[0-9]+$/.test(cleaned);
-    }, {
-      message: "Please enter a valid phone number",
-    }),
+    .max(20, "Phone number must be less than 20 characters"),
   contactMethod: z
     .string()
-    .refine((val) => ["phone", "whatsapp"].includes(val), {
-      message: "Invalid contact method selected",
-    }),
+    .min(1, "Please select a contact method"),
   topics: z
     .array(z.string())
     .min(1, "Please select at least one discussion topic")
@@ -163,40 +119,14 @@ export const speakStep2Schema = z.object({
   timeSlot: z.string().min(1, "Please select a preferred time slot"),
   timezone: z
     .string()
-    .min(1, "Please select your timezone")
-    .refine(
-      (val) =>
-        [
-          "est",
-          "cst-us",
-          "mst",
-          "pst",
-          "gmt",
-          "wat",
-          "cat",
-          "eat",
-          "gst",
-          "ist",
-          "cst",
-          "jst",
-        ].includes(val),
-      {
-        message: "Invalid timezone selected",
-      },
-    ),
+    .min(1, "Please select your timezone"),
   urgency: z
     .string()
-    .min(1, "Please select urgency level")
-    .refine(
-      (val) => ["urgent", "high", "standard", "exploratory"].includes(val),
-      {
-        message: "Invalid urgency level selected",
-      },
-    ),
+    .min(1, "Please select urgency level"),
   agenda: z
     .string()
-    .max(1000, "Agenda must be less than 1000 characters")
     .trim()
+    .max(1000, "Agenda must be less than 1000 characters")
     .optional()
     .or(z.literal("")),
 });
