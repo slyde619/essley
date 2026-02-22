@@ -1,44 +1,40 @@
 import { z } from "zod";
 
-// Common validation patterns
-const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 // Mandate Form Schema - Step by Step
 export const mandateStep1Schema = z.object({
   fullName: z
     .string()
     .min(2, "Full name must be at least 2 characters")
-    .max(50, "Full name must be less than 100 characters")
+    .max(100, "Full name must be less than 100 characters")
     .trim(),
   title: z
     .string()
     .min(2, "Title must be at least 2 characters")
-    .max(20, "Title must be less than 100 characters")
+    .max(100, "Title must be less than 100 characters")
     .trim(),
   company: z
     .string()
     .min(2, "Company name must be at least 2 characters")
-    .max(50, "Company name must be less than 200 characters")
+    .max(200, "Company name must be less than 200 characters")
     .trim(),
   country: z
     .string()
     .min(2, "Country must be at least 2 characters")
-    .max(30, "Country must be less than 100 characters")
+    .max(100, "Country must be less than 100 characters")
     .trim(),
   email: z
     .string()
     .email("Please enter a valid corporate email")
-    .refine((email) => emailRegex.test(email), {
-      message: "Please enter a valid email address",
-    })
     .transform((email) => email.toLowerCase().trim()),
   phone: z
     .string()
-    .min(10, "Phone number must be at least 10 digits")
-    .max(15, "Phone number must be less than 20 characters")
-    .refine((phone) => phoneRegex.test(phone.replace(/[\s()-]/g, "")), {
-      message: "Please enter a valid phone number (e.g., +1234567890)",
+    .min(10, "Phone number must be at least 10 characters")
+    .max(20, "Phone number must be less than 20 characters")
+    .refine((phone) => {
+      const cleaned = phone.replace(/[\s()-]/g, "");
+      return cleaned.length >= 10 && /^\+?[0-9]+$/.test(cleaned);
+    }, {
+      message: "Please enter a valid phone number",
     }),
   registrationNumber: z
     .string()
@@ -141,16 +137,16 @@ export const speakStep1Schema = z.object({
   email: z
     .string()
     .email("Please enter a valid email")
-    .refine((email) => emailRegex.test(email), {
-      message: "Please enter a valid email address",
-    })
     .transform((email) => email.toLowerCase().trim()),
   phone: z
     .string()
-    .min(10, "Phone number must be at least 10 digits")
-    .max(15, "Phone number must be less than 15 characters")
-    .refine((phone) => phoneRegex.test(phone.replace(/[\s()-]/g, "")), {
-      message: "Please enter a valid phone number (e.g., +1234567890)",
+    .min(10, "Phone number must be at least 10 characters")
+    .max(20, "Phone number must be less than 20 characters")
+    .refine((phone) => {
+      const cleaned = phone.replace(/[\s()-]/g, "");
+      return cleaned.length >= 10 && /^\+?[0-9]+$/.test(cleaned);
+    }, {
+      message: "Please enter a valid phone number",
     }),
   contactMethod: z
     .string()
@@ -172,6 +168,8 @@ export const speakStep2Schema = z.object({
       (val) =>
         [
           "est",
+          "cst-us",
+          "mst",
           "pst",
           "gmt",
           "wat",
