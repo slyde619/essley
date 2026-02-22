@@ -1,5 +1,6 @@
-import { useEffect, useRef, useReducer } from "react";
+import { useEffect, useRef, useReducer, useCallback } from "react";
 import { useForm } from "react-hook-form";
+import * as v from "valibot";
 import { X } from "lucide-react";
 import {
   getSchemaForStep,
@@ -17,7 +18,6 @@ import SpeakStep1 from "./modal/SpeakStep1";
 import SpeakStep2 from "./modal/SpeakStep2";
 
 const initialFormData = {
-  // Mandate fields
   fullName: "",
   title: "",
   company: "",
@@ -81,8 +81,7 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
   const totalSteps = type === "mandate" ? 3 : 2;
   const progressWidth = `${(currentStep / totalSteps) * 100}%`;
 
-  // Initialize react-hook-form WITHOUT zodResolver
-  // Validation is handled manually per-step using Zod's safeParse
+  // react-hook-form
   const {
     register,
     formState: { errors, isSubmitting },
@@ -103,7 +102,7 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
   const watchedTopics = watch("topics");
   const watchedTimeSlot = watch("timeSlot");
 
-  // Sync form values with formData state for persistence
+  // Keep reducer formData in sync with react-hook-form via watch subscription
   useEffect(() => {
     const subscription = watch((value) => {
       dispatch({ type: "UPDATE_FORM_DATA", payload: value });
@@ -111,20 +110,39 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Form persistence
+  // Keep a ref to latest formData so the persistence callback always has fresh data
+  const formDataRef = useRef(formData);
+  useEffect(() => {
+    formDataRef.current = formData;
+  }, [formData]);
+
+  // Form persistence (localStorage save/restore)
+  const restoreFormData = useCallback(
+    (updaterOrData) => {
+      // The hook calls: setFormData((prev) => ({ ...prev, ...newData }))
+      // So updaterOrData may be a function that expects previous state
+      const newData =
+        typeof updaterOrData === "function"
+          ? updaterOrData(formDataRef.current)
+          : updaterOrData;
+
+      dispatch({ type: "SET_FORM_DATA", payload: newData });
+      Object.keys(newData).forEach((k) => {
+        setValue(k, newData[k]);
+      });
+    },
+    [setValue],
+  );
+
   const { clearPersistedData, saveImmediately } = useFormPersistence(
     `modal-form-${type}`,
     formData,
-    (newData) => {
-      dispatch({ type: "SET_FORM_DATA", payload: newData });
-      Object.keys(newData).forEach((key) => {
-        setValue(key, newData[key]);
-      });
-    },
+    restoreFormData,
     isOpen,
     500,
   );
 
+  // Open / close dialog
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
@@ -144,9 +162,7 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
   }, [isOpen, reset, clearPersistedData]);
 
   const handleBackdropClick = (e) => {
-    if (e.target === dialogRef.current) {
-      onClose();
-    }
+    if (e.target === dialogRef.current) onClose();
   };
 
   const handleKeyPress = (callback) => (e) => {
@@ -164,61 +180,89 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
     setValue(field, newValue, { shouldDirty: true });
   };
 
-  /**
-   * Validate only the current step's fields using Zod's safeParse.
-   * Maps errors back to react-hook-form via setError so ErrorMessage components work.
-   */
+  // ──────────────────────────────────────────────────────────────────
+  // Collect live values from the DOM + react-hook-form for non-input
+  // fields (arrays, numbers set via setValue). This is the single
+  // source of truth at validation time — no stale state possible.
+  // ──────────────────────────────────────────────────────────────────
+  const collectLiveValues = () => {
+    const values = { ...formData }; // start with reducer state as fallback
+
+    // Overwrite with actual DOM values for all registered inputs
+    const form = dialogRef.current?.querySelector(".modal-content");
+    if (form) {
+      const inputs = form.querySelectorAll("input, select, textarea");
+      inputs.forEach((el) => {
+        const name = el.getAttribute("name");
+        if (!name) return;
+
+        if (el.type === "range") {
+          values[name] = Number(el.value);
+        } else {
+          values[name] = el.value;
+        }
+      });
+    }
+
+    // Arrays and non-DOM fields stay from formData (products, topics, etc.)
+    return values;
+  };
+
+  // ──────────────────────────────────────────────────────────────────
+  // VALIDATION — collects live DOM values, runs Valibot safeParse on
+  // the current step's schema, maps issues → react-hook-form setError
+  // ──────────────────────────────────────────────────────────────────
   const validateCurrentStep = () => {
     const schema = getSchemaForStep(type, currentStep);
+    const liveValues = collectLiveValues();
 
-    // Use formData from the reducer — it stays in sync via the watch() subscription
-    // getValues() can return stale defaultValues in some cases
-    const stepFieldNames = Object.keys(schema.shape);
+    // Pick only this step's fields
+    const stepKeys = Object.keys(schema.entries);
     const stepValues = {};
-    stepFieldNames.forEach((key) => {
-      stepValues[key] = formData[key];
+    stepKeys.forEach((key) => {
+      stepValues[key] = liveValues[key];
     });
 
-    // Clear only this step's field errors before re-validating
-    clearErrors(stepFieldNames);
+    // Clear this step's errors before re-validating
+    clearErrors(stepKeys);
 
-    const result = schema.safeParse(stepValues);
+    const result = v.safeParse(schema, stepValues);
 
     if (!result.success) {
-      const issues = result.error?.issues || [];
-      issues.forEach((issue) => {
-        const fieldName = issue.path.join(".");
+      result.issues.forEach((issue) => {
+        const fieldName = issue.path?.map((p) => p.key).join(".") || "";
         if (fieldName) {
-          setError(fieldName, {
-            type: "manual",
-            message: issue.message,
-          });
+          setError(fieldName, { type: "manual", message: issue.message });
         }
       });
       return false;
     }
 
+    // Sync validated values back to formData so persistence saves them
+    dispatch({ type: "UPDATE_FORM_DATA", payload: stepValues });
+
     return true;
   };
 
-  const handleNext = async () => {
-    const isValid = validateCurrentStep();
+  // ── Step navigation ────────────────────────────────────────────────
 
-    if (isValid) {
-      if (currentStep < totalSteps) {
-        dispatch({ type: "NEXT_STEP" });
-        saveImmediately();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    } else {
-      // Scroll to first error element
+  const handleNext = () => {
+    if (!validateCurrentStep()) {
+      // Scroll to first error
       setTimeout(() => {
-        const firstErrorEl = document.querySelector(".error");
-        if (firstErrorEl) {
-          firstErrorEl.scrollIntoView({ behavior: "smooth", block: "center" });
-          firstErrorEl.focus();
+        const el = document.querySelector(".error");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          el.focus();
         }
       }, 50);
+      return;
+    }
+
+    if (currentStep < totalSteps) {
+      dispatch({ type: "NEXT_STEP" });
+      saveImmediately();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -230,26 +274,24 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
     }
   };
 
-  const handleSubmit = async () => {
-    // Validate the current (final) step first
-    const isStepValid = validateCurrentStep();
-    if (!isStepValid) return;
+  // ── Submit (final step) ────────────────────────────────────────────
 
-    // Full-form validation as a safety net
+  const handleSubmit = async () => {
+    // Validate the last step first
+    if (!validateCurrentStep()) return;
+
+    // Full-form safety net using live values
     const completeSchema =
       type === "mandate" ? completeMandateSchema : completeSpeakSchema;
-    const result = completeSchema.safeParse(formData);
+    const liveValues = collectLiveValues();
+    const result = v.safeParse(completeSchema, liveValues);
 
     if (!result.success) {
-      console.error("Full form validation failed:", result.error?.issues);
-      const issues = result.error?.issues || [];
-      issues.forEach((issue) => {
-        const fieldName = issue.path.join(".");
+      console.error("Full validation failed:", result.issues);
+      result.issues.forEach((issue) => {
+        const fieldName = issue.path?.map((p) => p.key).join(".") || "";
         if (fieldName) {
-          setError(fieldName, {
-            type: "manual",
-            message: issue.message,
-          });
+          setError(fieldName, { type: "manual", message: issue.message });
         }
       });
       return;
@@ -257,10 +299,10 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
 
     try {
       const refNum = Math.floor(100000 + Math.random() * 900000);
-      console.log("Form submitted:", { ...result.data, reference: refNum });
+      console.log("Form submitted:", { ...result.output, reference: refNum });
 
       // TODO: Replace with actual API call
-      // await submitFormData({ ...result.data, reference: refNum });
+      // await submitFormData({ ...result.output, reference: refNum });
 
       dispatch({ type: "SET_SUCCESS", payload: true });
       clearPersistedData();
@@ -268,6 +310,8 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
       console.error("Form submission error:", error);
     }
   };
+
+  // ── Render ─────────────────────────────────────────────────────────
 
   const stepLabels = {
     mandate: ["Company Information", "Product & Volume", "Transaction Details"],
@@ -280,9 +324,7 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
       className="modal-dialog"
       onClick={handleBackdropClick}
       onKeyDown={(e) => {
-        if (e.key === "Escape") {
-          onClose();
-        }
+        if (e.key === "Escape") onClose();
       }}
     >
       <div
@@ -291,8 +333,6 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
       >
-        <div className="modal-scan" />
-
         <div className="modal-progress">
           <div
             className="modal-progress-bar"
@@ -323,6 +363,7 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
               <SuccessState type={type} onClose={onClose} />
             ) : (
               <>
+                {/* ── MANDATE FORMS ── */}
                 {type === "mandate" && (
                   <>
                     {currentStep === 1 && (
@@ -332,7 +373,6 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
                         onNext={handleNext}
                       />
                     )}
-
                     {currentStep === 2 && (
                       <MandateStep2
                         register={register}
@@ -345,7 +385,6 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
                         onBack={handleBack}
                       />
                     )}
-
                     {currentStep === 3 && (
                       <MandateStep3
                         register={register}
@@ -358,6 +397,7 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
                   </>
                 )}
 
+                {/* ── SPEAK FORMS ── */}
                 {type === "speak" && (
                   <>
                     {currentStep === 1 && (
@@ -372,7 +412,6 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
                         onNext={handleNext}
                       />
                     )}
-
                     {currentStep === 2 && (
                       <SpeakStep2
                         register={register}
