@@ -91,7 +91,6 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
     watch,
     reset,
     clearErrors,
-    getValues,
   } = useForm({
     mode: "onBlur",
     defaultValues: formData,
@@ -110,7 +109,6 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
       dispatch({ type: "UPDATE_FORM_DATA", payload: value });
     });
     return () => subscription.unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Form persistence
@@ -172,13 +170,13 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
    */
   const validateCurrentStep = () => {
     const schema = getSchemaForStep(type, currentStep);
-    const allValues = getValues();
 
-    // Pick only the fields relevant to the current step
+    // Use formData from the reducer — it stays in sync via the watch() subscription
+    // getValues() can return stale defaultValues in some cases
     const stepFieldNames = Object.keys(schema.shape);
     const stepValues = {};
     stepFieldNames.forEach((key) => {
-      stepValues[key] = allValues[key];
+      stepValues[key] = formData[key];
     });
 
     // Clear only this step's field errors before re-validating
@@ -187,12 +185,15 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
     const result = schema.safeParse(stepValues);
 
     if (!result.success) {
-      result.error.errors.forEach((err) => {
-        const fieldName = err.path.join(".");
-        setError(fieldName, {
-          type: "manual",
-          message: err.message,
-        });
+      const issues = result.error?.issues || [];
+      issues.forEach((issue) => {
+        const fieldName = issue.path.join(".");
+        if (fieldName) {
+          setError(fieldName, {
+            type: "manual",
+            message: issue.message,
+          });
+        }
       });
       return false;
     }
@@ -237,17 +238,19 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
     // Full-form validation as a safety net
     const completeSchema =
       type === "mandate" ? completeMandateSchema : completeSpeakSchema;
-    const allValues = getValues();
-    const result = completeSchema.safeParse(allValues);
+    const result = completeSchema.safeParse(formData);
 
     if (!result.success) {
-      console.error("Full form validation failed:", result.error.errors);
-      result.error.errors.forEach((err) => {
-        const fieldName = err.path.join(".");
-        setError(fieldName, {
-          type: "manual",
-          message: err.message,
-        });
+      console.error("Full form validation failed:", result.error?.issues);
+      const issues = result.error?.issues || [];
+      issues.forEach((issue) => {
+        const fieldName = issue.path.join(".");
+        if (fieldName) {
+          setError(fieldName, {
+            type: "manual",
+            message: issue.message,
+          });
+        }
       });
       return;
     }
