@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { lazy, Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/ScrollToTop";
 
 // Lazy load routes for code splitting
 const Index = lazy(() => import("@/pages/Index"));
@@ -27,6 +28,7 @@ const PageLoader = () => (
 const App = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Navbar />
       <Suspense fallback={<PageLoader />}>
         <Routes>

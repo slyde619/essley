@@ -27,11 +27,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="md:col-span-2">
-            <Link
-              to="/"
-              className="font-heading text-xl font-bold tracking-wider text-foreground"
-            >
-              ESSLEY<span className="text-primary">.</span>TRADING
+            <Link to="/" className="inline-block">
+              <img
+                src="/brand-logo.png"
+                alt="Essley Trading"
+                className="h-10 sm:h-12 w-auto"
+              />
             </Link>
             <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-md">
               A global oil & gas intermediary facilitating structured crude oil

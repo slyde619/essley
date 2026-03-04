@@ -100,9 +100,9 @@
 
 /* ─── Custom utilities ─── */
 @utility bg-glass {
-  background: hsl(220 30% 14% / 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: hsl(220 30% 14% / 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 @utility bg-gradient-dark {

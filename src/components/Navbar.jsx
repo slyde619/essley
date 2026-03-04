@@ -30,7 +30,10 @@ const navLinks = [
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [modalState, setModalState] = useState({ isOpen: false, type: "mandate" });
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    type: "mandate",
+  });
   const location = useLocation();
 
   const openModal = (type) => {
@@ -66,11 +69,12 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto flex items-center justify-between px-6">
-        <Link
-          to="/"
-          className="font-heading text-xl font-bold tracking-wider text-foreground"
-        >
-          ESSLEY<span className="text-primary">.</span>TRADING
+        <Link to="/" className="flex items-center">
+          <img
+            src="/brand-logo.png"
+            alt="Essley Trading"
+            className="h-8 sm:h-10 md:h-12 w-auto transition-all duration-300"
+          />
         </Link>
 
         {/* Desktop Nav */}
