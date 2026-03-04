@@ -9,15 +9,21 @@ import {
 } from "lucide-react";
 
 export const headlines = [
+  "Advanced LNG Processing & Distribution.",
+  "Offshore Platforms. Onshore Excellence.",
+  "World-Class Refinery Networks.",
+  "Industrial-Scale Processing Systems.",
   "Structured Energy Transactions. Globally Connected.",
-  "Verified Sellers. Qualified Buyers. Secure Execution.",
-  "Precision Brokerage in Global Oil Markets.",
+  "Coastal Terminals. Seamless Logistics.",
 ];
 
 export const heroImages = [
-  "/images/hero.webp", // Oil tanker at sea
-  "/images/hero2.webp", // Refinery operations
-  "/images/hero3.webp", // Business handshake
+  "https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629153/avi/seedream-4.5_Ultra-detailed_liquefied_natural_gas_processing_facility_at_twilight_tall_silver-0_bfkw2f.avif",
+  "https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629151/avi/seedream-4.5_Ultra-realistic_offshore_oil_drilling_platform_standing_in_calm_ocean_water_mass-0_llvrdv.avif",
+  "https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629149/avi/seedream-4.5_Ultra-wide_cinematic_view_of_oil_refinery_skyline_with_tall_distillation_columns-0_vs9vua.avif",
+  "https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629150/avi/seedream-4.5_Ultra-realistic_refinery_interior_filled_with_complex_stainless_steel_pipeline_n-0_utczip.avif",
+  "https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629152/avi/seedream-4.5_Massive_oil_refinery_complex_at_dusk_transitioning_into_night_intricate_network_-0_bmvcz2.avif",
+  "https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629152/avi/seedream-4.5_Massive_oil_pipeline_terminal_near_coastline_during_nightfall_pipelines_stretchi-0_1_noznjf.avif",
 ];
 
 export const roleItems = [

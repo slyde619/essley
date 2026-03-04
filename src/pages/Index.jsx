@@ -19,6 +19,7 @@ import {
 import ScrollReveal from "@/components/ScrollReveal";
 import Modal from "@/components/Modal";
 import ProductsPortfolio from "@/components/ProductsPortfolio";
+import GlobalReach from "@/components/GlobalReach";
 import {
   headlines,
   heroImages,
@@ -69,7 +70,7 @@ const Index = () => {
               className="w-full h-full object-cover"
             />
             {/* Overlay for text readability */}
-            <div className="absolute inset-0 bg-linear-to-b from-background/80 via-background/70 to-background/90" />
+            <div className="absolute inset-0 bg-linear-to-b from-background/50 via-background/30 to-background/50" />
             <div className="absolute inset-0 bg-navy-deep/40" />
           </motion.div>
         </AnimatePresence>
@@ -142,73 +143,73 @@ const Index = () => {
       </section>
 
       {/* WHO WE ARE */}
-      <section className="relative py-28 overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-linear-to-br from-card via-background to-card/50" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(var(--primary-rgb,59,130,246),0.05),transparent_50%)]" />
+      <section className="relative py-32 overflow-hidden bg-background">
+        {/* Subtle background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background" />
+
+        {/* Fine grain texture overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.25] pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='4' seed='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)' opacity='0.35'/%3E%3C/svg%3E")`,
+            backgroundSize: "256px 256px",
+          }}
+        />
 
         <div className="container mx-auto px-6 relative z-10">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
+          <div className="grid md:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
             {/* Left Content */}
             <ScrollReveal>
-              <div>
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-6">
+              <div className="space-y-8">
+                <div>
+                  <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-4 tracking-tight">
                     Who We Are
                   </h2>
-                  <div className="w-20 h-1 bg-linear-to-r from-primary to-primary/40 mb-8" />
-                  <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-                    Essley Trading is a global oil and gas intermediary
-                    specializing in the facilitation of structured crude oil
-                    transactions. We connect verified sellers holding legitimate
-                    mandates with qualified international buyers, ensuring every
-                    transaction adheres to the highest standards of compliance,
-                    confidentiality, and operational precision.
-                  </p>
+                </div>
 
-                  <Link
-                    to="/about"
-                    className="group inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground font-heading font-semibold text-sm tracking-wide rounded-md transition-all duration-300 hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-1"
-                  >
-                    Learn More About Us
-                    <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-                  </Link>
-                </motion.div>
+                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+                  Essley Trading is a global oil and gas intermediary
+                  specializing in the facilitation of structured crude oil
+                  transactions. We connect verified sellers holding legitimate
+                  mandates with qualified international buyers, ensuring every
+                  transaction adheres to the highest standards of compliance,
+                  confidentiality, and operational precision.
+                </p>
+
+                <Link
+                  to="/about"
+                  className="group relative inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background font-heading font-medium text-sm tracking-wide transition-all duration-200 hover:gap-3 overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <span className="relative">Learn More About Us</span>
+                  <ArrowRight className="w-4 h-4 relative" />
+                </Link>
               </div>
             </ScrollReveal>
 
             {/* Right Stats Grid */}
-            <ScrollReveal delay={0.2}>
-              <div className="grid grid-cols-2 gap-6">
+            <ScrollReveal delay={0.1}>
+              <div className="grid grid-cols-2 gap-4">
                 {[
                   {
                     icon: TrendingUp,
                     label: "Global Transactions",
                     description: "Facilitating deals across continents",
-                    gradient: "from-blue-500/10 to-blue-600/5",
                   },
                   {
                     icon: Shield,
                     label: "100% Compliant",
                     description: "Full regulatory adherence",
-                    gradient: "from-green-500/10 to-green-600/5",
                   },
                   {
                     icon: Users,
                     label: "Verified Network",
                     description: "Trusted buyers & sellers",
-                    gradient: "from-purple-500/10 to-purple-600/5",
                   },
                   {
                     icon: Award,
                     label: "Industry Expertise",
                     description: "Seasoned professionals",
-                    gradient: "from-amber-500/10 to-amber-600/5",
                   },
                 ].map((stat, index) => (
                   <motion.div
@@ -216,21 +217,45 @@ const Index = () => {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    whileHover={{ y: -8, transition: { duration: 0.2 } }}
+                    transition={{ duration: 0.4, delay: index * 0.08 }}
+                    whileHover={{ scale: 1.05 }}
                     className="group relative"
                   >
-                    <div
-                      className={`absolute inset-0 bg-linear-to-br ${stat.gradient} rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-                    />
-                    <div className="relative p-6 rounded-xl border border-border bg-card hover:border-primary/30 transition-all duration-300 h-full">
-                      <stat.icon className="w-8 h-8 text-primary mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3" />
-                      <h3 className="font-heading text-base font-bold text-foreground mb-2">
-                        {stat.label}
-                      </h3>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        {stat.description}
-                      </p>
+                    {/* Glass card */}
+                    <div className="relative h-full overflow-hidden rounded-sm transition-all duration-300">
+                      {/* Frosted glass background */}
+                      <div className="absolute inset-0 bg-card/60 backdrop-blur-md border-2 border-border/40 rounded-sm transition-all duration-300 group-hover:border-orange-500/30 group-hover:shadow-lg group-hover:shadow-orange-500/5" />
+
+                      {/* Grain texture on card */}
+                      <div
+                        className="absolute inset-0 opacity-[0.15] pointer-events-none rounded-sm"
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='cardGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3' numOctaves='3' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23cardGrain)' opacity='0.4'/%3E%3C/svg%3E")`,
+                          backgroundSize: "128px 128px",
+                        }}
+                      />
+
+                      {/* Content */}
+                      <div className="relative p-6 space-y-4">
+                        <div className="w-10 h-10 flex items-center justify-center bg-foreground/5 backdrop-blur-sm transition-all duration-300 group-hover:bg-orange-500/10">
+                          <stat.icon
+                            className="w-5 h-5 text-foreground/70 transition-all duration-300 group-hover:scale-110 group-hover:text-orange-600/80"
+                            strokeWidth={1.5}
+                          />
+                        </div>
+
+                        <div>
+                          <h3 className="font-heading text-sm font-semibold text-foreground mb-1.5 tracking-wide transition-colors duration-300 group-hover:text-orange-900">
+                            {stat.label}
+                          </h3>
+                          <p className="text-xs text-muted-foreground leading-relaxed transition-colors duration-300 group-hover:text-muted-foreground/80">
+                            {stat.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Subtle hover accent */}
+                      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
                   </motion.div>
                 ))}
@@ -241,43 +266,98 @@ const Index = () => {
       </section>
 
       {/* OUR ROLE PREVIEW */}
-      <section className="py-28">
-        <div className="container mx-auto px-6">
+      <section className="relative py-32 overflow-hidden">
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage:
+              "url(https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629149/avi/seedream-4.5_Ultra-wide_cinematic_refinery_skyline_with_distillation_towers_and_pipe_networks-0_ua4uok.avif)",
+          }}
+        >
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-background/60" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/50 to-background/70" />
+        </div>
+
+        {/* Grain texture overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.15] pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='roleGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.8' numOctaves='4' seed='8' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23roleGrain)' opacity='0.3'/%3E%3C/svg%3E")`,
+            backgroundSize: "256px 256px",
+          }}
+        />
+
+        <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal>
-            <div className="text-center mb-16">
-              <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-4">
+            <div className="text-center mb-20">
+              <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-4 tracking-tight">
                 Our Role in Transactions
               </h2>
-              <div className="w-16 h-0.5 bg-primary mx-auto" />
             </div>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
             {roleItems.map((item, i) => (
-              <ScrollReveal key={item.title} delay={i * 0.15}>
-                <div className="group p-8 rounded-lg border border-border bg-card hover:border-primary/30 transition-all duration-500">
-                  <item.icon className="w-10 h-10 text-primary mb-6 transition-transform duration-300 group-hover:scale-110" />
-                  <h3 className="font-heading text-lg font-semibold text-foreground mb-3">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {item.description}
-                  </p>
-                </div>
+              <ScrollReveal key={item.title} delay={i * 0.1}>
+                <motion.div
+                  className="group relative h-full min-h-[340px]"
+                  whileHover={{ scale: 1.03 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {/* Glass card */}
+                  <div className="relative h-full overflow-hidden rounded-sm transition-all duration-300">
+                    {/* Frosted glass background */}
+                    <div className="absolute inset-0 bg-card/50 backdrop-blur-md border-2 border-border/40 rounded-sm transition-all duration-300 group-hover:border-orange-500/30 group-hover:shadow-lg group-hover:shadow-orange-500/5" />
+
+                    {/* Grain texture on card */}
+                    <div
+                      className="absolute inset-0 opacity-[0.12] pointer-events-none rounded-sm"
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='roleCardGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.2' numOctaves='3' seed='${i + 10}' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23roleCardGrain)' opacity='0.4'/%3E%3C/svg%3E")`,
+                        backgroundSize: "128px 128px",
+                      }}
+                    />
+
+                    {/* Content */}
+                    <div className="relative h-full flex flex-col p-10">
+                      {/* Icon */}
+                      <div className="mb-8">
+                        <div className="w-12 h-12 flex items-center justify-center bg-foreground/8 backdrop-blur-sm transition-all duration-300 group-hover:bg-orange-500/10">
+                          <item.icon
+                            className="w-6 h-6 text-foreground/80 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:text-orange-600/90"
+                            strokeWidth={1.5}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Text content */}
+                      <div className="flex-1 space-y-4">
+                        <h3 className="font-heading text-lg font-semibold text-foreground tracking-wide leading-tight transition-colors duration-300 group-hover:text-orange-900">
+                          {item.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {item.description}
+                        </p>
+                      </div>
+
+                      {/* Learn more link */}
+                      <Link
+                        to="/our-role"
+                        className="inline-flex items-center gap-1.5 text-xs text-foreground/60 hover:text-orange-600 font-medium transition-colors duration-200 mt-6"
+                      >
+                        Learn more <ChevronRight size={12} />
+                      </Link>
+
+                      {/* Subtle bottom accent */}
+                      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                  </div>
+                </motion.div>
               </ScrollReveal>
             ))}
           </div>
-
-          <ScrollReveal delay={0.3}>
-            <div className="text-center mt-12">
-              <Link
-                to="/our-role"
-                className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 font-medium transition-colors"
-              >
-                Learn more about our role <ChevronRight size={14} />
-              </Link>
-            </div>
-          </ScrollReveal>
         </div>
       </section>
 
@@ -286,274 +366,149 @@ const Index = () => {
 
       {/* TRANSACTION PROCESS */}
       <section className="relative py-32 overflow-hidden">
-        {/* Animated background */}
-        <div className="absolute inset-0 bg-linear-to-b from-background via-card/30 to-background" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(var(--primary-rgb,59,130,246),0.08),transparent_60%)]" />
-
-        {/* Floating particles effect */}
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(6)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-2 h-2 bg-primary/20 rounded-full"
-              style={{
-                left: `${15 + i * 15}%`,
-                top: `${20 + (i % 3) * 20}%`,
-              }}
-              animate={{
-                y: [0, -30, 0],
-                opacity: [0.2, 0.5, 0.2],
-              }}
-              transition={{
-                duration: 3 + i * 0.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-          ))}
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage:
+              "url(https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629151/avi/seedream-4.5_Ultra-realistic_offshore_oil_drilling_platform_standing_in_calm_ocean_water_mass-0_llvrdv.avif)",
+          }}
+        >
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-background/60" />
+          <div className="absolute inset-0 bg-linear-to-b from-background/30 via-background/50 to-background/70" />
         </div>
+
+        {/* Grain texture overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.15] pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='processGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.6' numOctaves='4' seed='12' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23processGrain)' opacity='0.3'/%3E%3C/svg%3E")`,
+            backgroundSize: "256px 256px",
+          }}
+        />
 
         <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal>
             <div className="text-center mb-20">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
-                <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-4">
-                  Transaction Process
-                </h2>
-                <div className="w-24 h-1 bg-linear-to-r from-transparent via-primary to-transparent mx-auto mb-6" />
-                <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Our streamlined 6-step process ensures transparent, compliant,
-                  and efficient crude oil transactions
-                </p>
-              </motion.div>
+              <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-4 tracking-tight">
+                Transaction Process
+              </h2>
+
+              <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                Our streamlined 6-step process ensures transparent, compliant,
+                and efficient crude oil transactions
+              </p>
             </div>
           </ScrollReveal>
 
           {/* Process steps grid */}
           <div className="max-w-7xl mx-auto">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
-                {
-                  icon: FileText,
-                  gradient: "from-primary/90 to-primary/70",
-                  opacity: "20",
-                },
-                {
-                  icon: CheckCircle,
-                  gradient: "from-primary to-primary/80",
-                  opacity: "25",
-                },
-                {
-                  icon: FileSignature,
-                  gradient: "from-primary/80 to-primary/60",
-                  opacity: "22",
-                },
-                {
-                  icon: ClipboardCheck,
-                  gradient: "from-primary via-primary/90 to-primary/70",
-                  opacity: "24",
-                },
-                {
-                  icon: Handshake,
-                  gradient: "from-primary/95 to-primary/75",
-                  opacity: "23",
-                },
-                {
-                  icon: Ship,
-                  gradient: "from-primary to-primary/85",
-                  opacity: "26",
-                },
+                { icon: FileText },
+                { icon: CheckCircle },
+                { icon: FileSignature },
+                { icon: ClipboardCheck },
+                { icon: Handshake },
+                { icon: Ship },
               ].map((item, index) => {
                 const step = processSteps[index];
                 return (
-                  <ScrollReveal key={step.step} delay={index * 0.1}>
+                  <ScrollReveal key={step.step} delay={index * 0.08}>
                     <motion.div
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      whileHover={{
-                        y: -12,
-                        rotateX: 5,
-                        transition: { duration: 0.3 },
-                      }}
-                      className="group relative"
-                      style={{
-                        transformStyle: "preserve-3d",
-                        perspective: "1000px",
-                      }}
+                      className="group relative h-full min-h-[280px]"
+                      whileHover={{ scale: 1.03 }}
+                      transition={{ duration: 0.3 }}
                     >
-                      {/* Glow effect on hover */}
-                      <div
-                        className={`absolute -inset-0.5 bg-linear-to-r ${item.gradient} rounded-2xl opacity-0 group-hover:opacity-${item.opacity} blur-xl transition-all duration-500`}
-                      />
+                      {/* Glass card */}
+                      <div className="relative h-full overflow-hidden rounded-sm transition-all duration-300">
+                        {/* Frosted glass background */}
+                        <div className="absolute inset-0 bg-card/50 backdrop-blur-md border-2 border-border/40 rounded-sm transition-all duration-300 group-hover:border-orange-500/30 group-hover:shadow-lg group-hover:shadow-orange-500/5" />
 
-                      {/* Card */}
-                      <div className="relative h-full bg-card border border-border rounded-2xl overflow-hidden backdrop-blur-sm">
-                        {/* Top gradient bar */}
+                        {/* Grain texture on card */}
                         <div
-                          className={`h-1.5 bg-linear-to-r ${item.gradient}`}
+                          className="absolute inset-0 opacity-[0.12] pointer-events-none rounded-sm"
+                          style={{
+                            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='processCardGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.1' numOctaves='3' seed='${index + 20}' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23processCardGrain)' opacity='0.4'/%3E%3C/svg%3E")`,
+                            backgroundSize: "128px 128px",
+                          }}
                         />
 
-                        <div className="p-8">
-                          {/* Icon and step number */}
-                          <div className="flex items-start justify-between mb-6">
-                            <motion.div
-                              className={`relative p-4 rounded-xl bg-linear-to-br ${item.gradient}`}
-                              whileHover={{
-                                rotate: [0, -10, 10, -10, 0],
-                                scale: 1.1,
-                              }}
-                              transition={{ duration: 0.5 }}
-                            >
-                              <item.icon className="w-7 h-7 text-white relative z-10" />
-                              {/* Shine effect */}
-                              <div className="absolute inset-0 bg-white/20 rounded-xl transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000" />
-                            </motion.div>
-
-                            <div className="flex items-center gap-2">
-                              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                              <span className="text-5xl font-bold text-border group-hover:text-primary/30 transition-colors duration-300">
-                                {step.step}
-                              </span>
+                        {/* Content */}
+                        <div className="relative h-full flex flex-col p-8">
+                          {/* Icon */}
+                          <div className="mb-6">
+                            <div className="w-11 h-11 flex items-center justify-center bg-foreground/8 backdrop-blur-sm transition-all duration-300 group-hover:bg-orange-500/10">
+                              <item.icon
+                                className="w-5 h-5 text-foreground/80 transition-all duration-300 group-hover:scale-110 group-hover:-rotate-6 group-hover:text-orange-600/90"
+                                strokeWidth={1.5}
+                              />
                             </div>
                           </div>
 
-                          {/* Content */}
-                          <h3 className="font-heading text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors duration-300">
-                            {step.title}
-                          </h3>
-                          <p className="text-sm text-muted-foreground leading-relaxed">
-                            {step.description}
-                          </p>
+                          {/* Text content */}
+                          <div className="flex-1 space-y-3">
+                            <h3 className="font-heading text-base font-semibold text-foreground tracking-wide leading-tight transition-colors duration-300 group-hover:text-orange-900">
+                              {step.title}
+                            </h3>
+                            <p className="text-sm text-muted-foreground leading-relaxed transition-colors duration-300 group-hover:text-muted-foreground/80">
+                              {step.description}
+                            </p>
+                          </div>
 
-                          {/* Progress indicator */}
-                          <div className="mt-6 pt-4 border-t border-border/50">
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                              <div className="flex-1 h-1 bg-border/50 rounded-full overflow-hidden">
-                                <motion.div
-                                  className={`h-full bg-linear-to-r ${item.gradient}`}
-                                  initial={{ width: "0%" }}
-                                  whileInView={{ width: "100%" }}
-                                  viewport={{ once: true }}
-                                  transition={{
-                                    duration: 1,
-                                    delay: index * 0.2,
-                                  }}
-                                />
+                          {/* Step indicator */}
+                          <div className="mt-6 pt-4 border-t border-border/30 transition-colors duration-300 group-hover:border-orange-500/20">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1.5">
+                                {[...Array(6)].map((_, i) => (
+                                  <div
+                                    key={i}
+                                    className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+                                      i === index
+                                        ? "bg-orange-500 scale-125"
+                                        : "bg-border/50 group-hover:bg-border/70"
+                                    }`}
+                                  />
+                                ))}
                               </div>
-                              <span className="font-medium">
-                                Step {index + 1}/6
-                              </span>
+                              <Link
+                                to="/process"
+                                className="flex items-center justify-center w-6 h-6 rounded-full bg-foreground/5 hover:bg-orange-500/10 transition-all duration-200 group/arrow"
+                              >
+                                <ArrowRight className="w-3 h-3 text-foreground/60 group-hover/arrow:text-orange-600 transition-colors duration-200" />
+                              </Link>
                             </div>
                           </div>
+
+                          {/* Subtle bottom accent */}
+                          <div className="absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-orange-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </div>
-
-                        {/* Bottom shine effect */}
-                        <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       </div>
-
-                      {/* Connection line to next card (desktop only) */}
-                      {index < processSteps.length - 1 &&
-                        (index + 1) % 3 !== 0 && (
-                          <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-px">
-                            <motion.div
-                              className="h-full bg-linear-to-r from-primary/50 to-transparent"
-                              initial={{ scaleX: 0 }}
-                              whileInView={{ scaleX: 1 }}
-                              viewport={{ once: true }}
-                              transition={{
-                                duration: 0.8,
-                                delay: index * 0.15,
-                              }}
-                            />
-                            <motion.div
-                              className="absolute top-1/2 right-0 w-2 h-2 bg-primary rounded-full -translate-y-1/2"
-                              initial={{ scale: 0 }}
-                              whileInView={{ scale: 1 }}
-                              viewport={{ once: true }}
-                              transition={{
-                                duration: 0.3,
-                                delay: index * 0.15 + 0.8,
-                              }}
-                              animate={{ scale: [1, 1.5, 1] }}
-                            />
-                          </div>
-                        )}
                     </motion.div>
                   </ScrollReveal>
                 );
               })}
             </div>
           </div>
-
-          {/* Bottom CTA */}
-          <ScrollReveal delay={0.6}>
-            <motion.div
-              className="text-center mt-16"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-            ></motion.div>
-          </ScrollReveal>
         </div>
       </section>
 
       {/* GLOBAL REACH */}
-      <section className="py-28">
-        <div className="container mx-auto px-6">
-          <ScrollReveal>
-            <div className="text-center mb-16">
-              <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Global Reach
-              </h2>
-              <div className="w-16 h-0.5 bg-primary mx-auto mb-8" />
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Our network spans across major crude oil producing regions and
-                international markets, connecting West Africa, the Middle East,
-                Europe, and Asia.
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.2}>
-            <div className="relative max-w-4xl mx-auto h-64 md:h-80 rounded-lg border border-border bg-card overflow-hidden flex items-center justify-center">
-              {/* Stylized world map representation */}
-              <div className="relative w-full h-full p-8">
-                <Globe className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 text-border" />
-                {/* Trade route dots */}
-                {[
-                  { top: "30%", left: "25%", label: "West Africa" },
-                  { top: "35%", left: "55%", label: "Middle East" },
-                  { top: "25%", left: "48%", label: "Europe" },
-                  { top: "30%", left: "75%", label: "Asia" },
-                ].map((point) => (
-                  <div
-                    key={point.label}
-                    className="absolute flex flex-col items-center"
-                    style={{ top: point.top, left: point.left }}
-                  >
-                    <div className="w-3 h-3 rounded-full bg-primary animate-pulse-glow" />
-                    <span className="mt-2 text-[10px] text-muted-foreground font-medium whitespace-nowrap">
-                      {point.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
+      <GlobalReach />
 
       {/* CTA */}
-      <section className="py-28 bg-card border-t border-border">
-        <div className="container mx-auto px-6">
+      <section className="relative py-28 bg-muted/30 border-t border-border overflow-hidden">
+        {/* Grain texture background */}
+        <div
+          className="absolute inset-0 opacity-[0.2] pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='ctaGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.9' numOctaves='4' seed='20' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23ctaGrain)' opacity='0.3'/%3E%3C/svg%3E")`,
+            backgroundSize: "256px 256px",
+          }}
+        />
+
+        <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal>
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-6">

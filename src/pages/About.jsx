@@ -1,7 +1,19 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router";
 import { useInView } from "framer-motion";
-import { Check, ArrowRight, Globe, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Check,
+  ArrowRight,
+  Globe,
+  ChevronLeft,
+  ChevronRight,
+  Anchor,
+  Ship,
+  Building2,
+  Fuel,
+  TrendingUp,
+  Network,
+} from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 import Modal from "@/components/Modal";
 import {
@@ -54,7 +66,10 @@ const Counter = ({ value, prefix = "", suffix = "" }) => {
 
 const About = () => {
   const principlesRef = useRef(null);
-  const [modalState, setModalState] = useState({ isOpen: false, type: "mandate" });
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    type: "mandate",
+  });
 
   const openModal = (type) => {
     setModalState({ isOpen: true, type });
@@ -84,47 +99,55 @@ const About = () => {
     <main className="pt-24">
       {/* HERO SECTION */}
       <section className="relative min-h-[85vh] flex items-center overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0 bg-gradient-dark" />
-        <div className="absolute inset-0 bg-background/40" />
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629149/avi/seedream-4.5_Ultra-detailed_cinematic_view_of_refinery_flare_stack_tower_controlled_natural_g-0_urgboe.avif"
+            alt="Refinery Background"
+            className="w-full h-full object-fill"
+          />
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-background/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/30 to-background/50" />
+        </div>
 
-        {/* Decorative vertical lines */}
-        <div className="absolute inset-y-0 left-[10%] w-px bg-border/30" />
-        <div className="absolute inset-y-0 left-[30%] w-px bg-border/20" />
-        <div className="absolute inset-y-0 right-[30%] w-px bg-border/20" />
-        <div className="absolute inset-y-0 right-[10%] w-px bg-border/30" />
+        {/* Grain texture overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.15] pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='heroGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.8' numOctaves='4' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23heroGrain)' opacity='0.3'/%3E%3C/svg%3E")`,
+            backgroundSize: "256px 256px",
+          }}
+        />
 
         <div className="container mx-auto px-6 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
-            {/* Left: Text Content */}
+          <div className="max-w-4xl mx-auto">
+            {/* Text Content */}
             <ScrollReveal>
-              <div>
-                <span className="text-xs font-medium tracking-[0.2em] uppercase text-primary mb-4 block">
+              <div className="text-center">
+                <span className="text-xs font-medium tracking-widest uppercase text-primary/80 mb-4 block">
                   EST. 2012
                 </span>
-                <h1 className="font-heading text-5xl md:text-7xl font-bold text-foreground mb-6 leading-[1.05]">
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
                   About Essley Trading
                 </h1>
-                <p className="text-2xl md:text-3xl italic text-muted-foreground font-heading leading-tight">
-                  A trusted intermediary in global crude oil transactions
-                </p>
               </div>
             </ScrollReveal>
 
-            {/* Right: Stats Grid */}
+            {/* Stats - Simplified inline */}
             <ScrollReveal delay={0.2}>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 md:flex md:flex-wrap items-center justify-center gap-x-6 gap-y-6 md:gap-x-8 md:gap-y-4 mt-12">
                 {heroStats.map((stat, i) => (
                   <div
                     key={i}
-                    className="h-full p-6 border border-border bg-card/50 backdrop-blur-sm rounded-lg hover:border-primary/50 transition-all duration-300 flex flex-col"
+                    className="flex flex-col md:flex-row md:items-baseline gap-1 md:gap-2 text-center md:text-left"
                   >
-                    <div className="text-3xl md:text-4xl font-heading font-bold text-primary mb-2">
+                    <span className="text-xl md:text-2xl font-bold text-primary">
                       {stat.value}
-                    </div>
-                    <div className="text-sm text-muted-foreground leading-snug">
+                    </span>
+                    <span className="text-xs md:text-sm text-muted-foreground">
                       {stat.label}
-                    </div>
+                    </span>
                   </div>
                 ))}
               </div>
@@ -135,60 +158,61 @@ const About = () => {
 
       {/* MARQUEE BAND */}
       <section className="py-6 bg-card border-y border-border overflow-hidden">
-        <div className="flex items-center gap-8 whitespace-nowrap">
-          {[...marqueeItems, ...marqueeItems].map((item, i) => (
-            <div key={i} className="flex items-center gap-8">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-              <span className="text-sm font-medium text-muted-foreground tracking-wide">
-                {item}
-              </span>
-            </div>
-          ))}
+        <div className="flex items-center gap-8 whitespace-nowrap animate-marquee">
+          {[...marqueeItems, ...marqueeItems, ...marqueeItems].map(
+            (item, i) => (
+              <div key={i} className="flex items-center gap-8 flex-shrink-0">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                <span className="text-sm font-medium text-muted-foreground tracking-wide">
+                  {item}
+                </span>
+              </div>
+            ),
+          )}
         </div>
       </section>
 
-      {/* STORY SECTION */}
-      <section className="py-28">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
-            {/* Background */}
-            <ScrollReveal>
-              <div className="space-y-6">
-                <div>
-                  <span className="text-xs font-medium tracking-[0.2em] uppercase text-primary mb-4 block">
-                    {story.background.title}
-                  </span>
-                  <p className="text-lg text-muted-foreground leading-relaxed">
+      {/* OUR BACKGROUND SECTION - REDESIGNED */}
+      <section className="py-32">
+        <div className="container mx-auto px-6 max-w-5xl">
+          <ScrollReveal>
+            <div className="mb-10">
+              <span className="text-xs font-medium text-primary uppercase tracking-widest">
+                {story.background.title}
+              </span>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.2}>
+            <div className="relative group">
+              {/* Main Card */}
+              <div className="relative bg-card border border-border rounded-md p-10 md:p-12 shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+                {/* Sand/Grain Texture Overlay */}
+                <div
+                  className="absolute inset-0 opacity-[0.15] pointer-events-none"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='sandGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.2' numOctaves='5' seed='12' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0.3'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='1.2'/%3E%3CfeFuncG type='linear' slope='1.1'/%3E%3CfeFuncB type='linear' slope='0.9'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23sandGrain)' opacity='0.6'/%3E%3C/svg%3E")`,
+                    backgroundSize: "200px 200px",
+                  }}
+                />
+
+                {/* Content */}
+                <div className="relative space-y-6">
+                  <p className="text-lg md:text-xl text-foreground/90 leading-relaxed">
                     {story.background.content}
                   </p>
-                </div>
-                <blockquote className="pl-6 border-l-2 border-primary">
-                  <p className="text-xl italic text-foreground font-heading leading-relaxed">
-                    {story.background.quote}
-                  </p>
-                </blockquote>
-              </div>
-            </ScrollReveal>
 
-            {/* Mission */}
-            <ScrollReveal delay={0.2}>
-              <div className="p-8 bg-card rounded-lg border border-border">
-                <h3 className="text-xs font-medium tracking-[0.2em] uppercase text-primary mb-6">
-                  {story.mission.title}
-                </h3>
-                <ul className="space-y-4">
-                  {story.mission.points.map((point, i) => (
-                    <li key={i} className="flex gap-3">
-                      <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                      <span className="text-muted-foreground leading-relaxed">
-                        {point}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                  <div className="h-px bg-border my-8" />
+
+                  <div className="pl-6 border-l-2 border-primary/30">
+                    <p className="text-xl md:text-2xl text-foreground italic leading-relaxed">
+                      {story.background.quote}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </ScrollReveal>
-          </div>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -199,12 +223,7 @@ const About = () => {
 
         <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal>
-            <div className="text-center mb-16">
-              <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
-                By the Numbers
-              </h2>
-              <div className="w-16 h-0.5 bg-primary mx-auto" />
-            </div>
+            <div className="text-center mb-16"></div>
           </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
@@ -232,14 +251,34 @@ const About = () => {
       </section>
 
       {/* TIMELINE SECTION */}
-      <section className="py-28">
-        <div className="container mx-auto px-6">
+      <section className="py-28 relative overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629151/avi/seedream-4.5_Ultra-realistic_cinematic_oil_and_gas_pipeline_infrastructure_multiple_large_ind-0_ydpvzf.avif"
+            alt="Pipeline Infrastructure"
+            className="w-full h-full object-cover"
+          />
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-background/65" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/55 via-background/65 to-background/75" />
+        </div>
+
+        {/* Grain texture overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.10] pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='timelineGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.8' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23timelineGrain)' opacity='0.3'/%3E%3C/svg%3E")`,
+            backgroundSize: "256px 256px",
+          }}
+        />
+
+        <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal>
             <div className="text-center mb-16">
               <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
                 Our Journey
               </h2>
-              <div className="w-16 h-0.5 bg-primary mx-auto" />
             </div>
           </ScrollReveal>
 
@@ -344,7 +383,6 @@ const About = () => {
                 <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
                   Operating Principles
                 </h2>
-                <div className="w-16 h-0.5 bg-primary" />
               </div>
 
               {/* Navigation Controls */}
@@ -422,7 +460,6 @@ const About = () => {
               <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
                 Leadership Team
               </h2>
-              <div className="w-16 h-0.5 bg-primary mx-auto" />
             </div>
           </ScrollReveal>
 
@@ -466,67 +503,57 @@ const About = () => {
       {/* GLOBAL PRESENCE SECTION */}
       <section className="py-28 bg-card">
         <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
-            {/* Left: Regions List */}
-            <ScrollReveal>
-              <div>
-                <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
-                  Global Presence
-                </h2>
-                <div className="w-16 h-0.5 bg-primary mb-8" />
-                <p className="text-muted-foreground leading-relaxed mb-8">
-                  Essley Trading operates across six continents, connecting
-                  verified sellers with qualified buyers through a network built
-                  on trust, compliance, and professionalism.
-                </p>
-                <ul className="space-y-4">
-                  {globalRegions.map((region, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <Globe className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                      <div>
-                        <h3 className="font-heading font-semibold text-foreground mb-1">
-                          {region.region}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          {region.description}
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </ScrollReveal>
+          <ScrollReveal>
+            <div className="text-center mb-12 max-w-3xl mx-auto">
+              <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
+                Global Presence
+              </h2>
+              <p className="text-muted-foreground leading-relaxed">
+                Essley Trading operates across six continents, connecting
+                verified sellers with qualified buyers through a network built
+                on trust, compliance, and professionalism.
+              </p>
+            </div>
+          </ScrollReveal>
 
-            {/* Right: Map Visualization */}
-            <ScrollReveal delay={0.2}>
-              <div className="relative aspect-square max-w-md mx-auto">
-                <div className="absolute inset-0 rounded-full border border-border/30" />
-                <div className="absolute inset-8 rounded-full border border-border/20" />
-                <div className="absolute inset-16 rounded-full border border-border/10" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {globalRegions.map((region, i) => {
+              // Map regions to specific icons
+              const iconMap = {
+                "West Africa": Anchor,
+                "Asia Pacific": Ship,
+                "Europe": Building2,
+                "Middle East": Fuel,
+                "North America": TrendingUp,
+                "South America": Network,
+              };
+              const IconComponent = iconMap[region.region] || Globe;
 
-                {/* Animated points */}
-                {[0, 60, 120, 180, 240, 300].map((angle, i) => {
-                  const x = 50 + 40 * Math.cos((angle * Math.PI) / 180);
-                  const y = 50 + 40 * Math.sin((angle * Math.PI) / 180);
-                  return (
+              return (
+                <ScrollReveal key={i} delay={i * 0.1}>
+                  <div className="relative h-full p-8 border border-border bg-background rounded-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden group">
+                    {/* Sand/Grain Texture Overlay */}
                     <div
-                      key={i}
-                      className="absolute w-3 h-3 rounded-full bg-primary animate-pulse"
+                      className="absolute inset-0 opacity-[0.12] pointer-events-none"
                       style={{
-                        left: `${x}%`,
-                        top: `${y}%`,
-                        animationDelay: `${i * 0.3}s`,
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='globalGrain${i}'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.2' numOctaves='5' seed='${12 + i}' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0.3'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='1.2'/%3E%3CfeFuncG type='linear' slope='1.1'/%3E%3CfeFuncB type='linear' slope='0.9'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23globalGrain${i})' opacity='0.6'/%3E%3C/svg%3E")`,
+                        backgroundSize: "200px 200px",
                       }}
                     />
-                  );
-                })}
 
-                {/* Center point */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                  <div className="w-2 h-2 rounded-full bg-primary-foreground" />
-                </div>
-              </div>
-            </ScrollReveal>
+                    <div className="relative">
+                      <IconComponent className="w-8 h-8 text-primary mb-4 group-hover:scale-110 transition-transform duration-300" />
+                      <h3 className="font-heading text-xl font-semibold text-foreground mb-2">
+                        {region.region}
+                      </h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {region.description}
+                      </p>
+                    </div>
+                  </div>
+                </ScrollReveal>
+              );
+            })}
           </div>
         </div>
       </section>

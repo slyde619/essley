@@ -1,5 +1,5 @@
 import { Clock, Shield } from "lucide-react";
-import { LazyMotion, domAnimation, m } from "framer-motion";
+import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 
 const ResponseTime = () => {
@@ -19,70 +19,79 @@ const ResponseTime = () => {
   ];
 
   return (
-    <LazyMotion features={domAnimation}>
-      <ScrollReveal delay={0.6}>
-        <m.div
-          initial={{ opacity: 0, x: 30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="group relative"
-        >
-          {/* Glow */}
-          <div className="absolute -inset-0.5 bg-linear-to-r from-primary to-primary/80 rounded-2xl opacity-0 group-hover:opacity-15 blur-xl transition-all duration-500" />
+    <ScrollReveal delay={0.5}>
+      <motion.div
+        className="group relative h-full"
+        whileHover={{ scale: 1.02 }}
+        transition={{ duration: 0.3 }}
+      >
+        {/* Glass card */}
+        <div className="relative h-full overflow-hidden rounded-sm transition-all duration-300">
+          {/* Frosted glass background */}
+          <div className="absolute inset-0 bg-card/50 backdrop-blur-md border-2 border-border/40 rounded-sm transition-all duration-300 group-hover:border-orange-500/30 group-hover:shadow-lg group-hover:shadow-orange-500/5" />
 
-          <div className="relative p-6 sm:p-8 md:p-10 rounded-2xl border border-border bg-card/80 backdrop-blur-sm h-full flex flex-col hover:border-primary/30 transition-all duration-300">
-            <div className="flex items-center gap-3 mb-6 sm:mb-8">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-linear-to-br from-primary to-primary/80 flex items-center justify-center shrink-0">
-                <Clock size={20} className="sm:w-6 sm:h-6 text-white" />
+          {/* Grain texture on card */}
+          <div
+            className="absolute inset-0 opacity-[0.12] pointer-events-none rounded-sm"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='responseGrain'%3E%3CfeTurbulature type='fractalNoise' baseFrequency='3.2' numOctaves='3' seed='210' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23responseGrain)' opacity='0.4'/%3E%3C/svg%3E")`,
+              backgroundSize: "128px 128px",
+            }}
+          />
+
+          {/* Content */}
+          <div className="relative h-full flex flex-col p-8 md:p-10">
+            {/* Header */}
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-12 flex items-center justify-center bg-foreground/8 backdrop-blur-sm transition-all duration-300 group-hover:bg-orange-500/10">
+                <Clock
+                  className="w-6 h-6 text-foreground/80 transition-all duration-300 group-hover:scale-110 group-hover:text-orange-600/90"
+                  strokeWidth={1.5}
+                />
               </div>
-              <h3 className="font-heading text-lg sm:text-xl md:text-2xl font-bold text-foreground">
+              <h3 className="font-heading text-xl font-semibold text-foreground tracking-wide transition-colors duration-300 group-hover:text-orange-900">
                 Response Time
               </h3>
             </div>
 
-            <div className="space-y-4 sm:space-y-6 grow">
+            {/* Response items */}
+            <div className="space-y-6 flex-1">
               {responseItems.map((item, i) => (
-                <m.div
-                  key={item.title}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.7 + i * 0.1 }}
-                  className="flex items-start gap-3 sm:gap-4"
-                >
-                  <div className="w-2 h-2 rounded-full bg-primary mt-1.5 sm:mt-2 shrink-0 animate-pulse" />
+                <div key={item.title} className="flex items-start gap-4">
+                  <div className="w-2 h-2 rounded-full bg-orange-500 mt-2 shrink-0" />
                   <div>
-                    <p className="text-xs sm:text-sm font-bold text-foreground mb-1">
+                    <p className="text-sm font-semibold text-foreground mb-1">
                       {item.title}
                     </p>
-                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       {item.desc}
                     </p>
                   </div>
-                </m.div>
+                </div>
               ))}
             </div>
 
-            <m.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 1 }}
-              className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-border"
-            >
+            {/* Footer note */}
+            <div className="mt-8 pt-6 border-t border-border/30 transition-colors duration-300 group-hover:border-border/40">
               <div className="flex items-start gap-2">
-                <Shield size={12} className="sm:w-3.5 sm:h-3.5 text-primary mt-0.5 shrink-0" />
-                <p className="text-[0.7rem] sm:text-xs text-muted-foreground italic leading-relaxed">
+                <Shield
+                  size={14}
+                  className="text-orange-500 mt-0.5 shrink-0"
+                  strokeWidth={1.5}
+                />
+                <p className="text-xs text-muted-foreground italic leading-relaxed">
                   All communications are subject to standard confidentiality
                   agreements and NCND protocols.
                 </p>
               </div>
-            </m.div>
+            </div>
+
+            {/* Subtle bottom accent */}
+            <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
-        </m.div>
-      </ScrollReveal>
-    </LazyMotion>
+        </div>
+      </motion.div>
+    </ScrollReveal>
   );
 };
 

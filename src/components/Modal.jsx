@@ -17,6 +17,10 @@ import MandateStep3 from "./modal/MandateStep3";
 import SpeakStep1 from "./modal/SpeakStep1";
 import SpeakStep2 from "./modal/SpeakStep2";
 
+// ── Web3Forms Config ─────────────────────────────────────────────
+const WEB3FORMS_ACCESS_KEY = "c9ba9ee7-d947-4c11-8548-8679043e4b14";
+const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
+
 const initialFormData = {
   fullName: "",
   title: "",
@@ -53,10 +57,13 @@ const modalReducer = (state, action) => {
       return { ...state, formData: action.payload };
     case "UPDATE_FORM_DATA":
       return { ...state, formData: { ...state.formData, ...action.payload } };
+    case "SET_SUBMIT_ERROR":
+      return { ...state, submitError: action.payload };
     case "RESET":
       return {
         currentStep: 1,
         showSuccess: false,
+        submitError: null,
         formData: initialFormData,
       };
     case "NEXT_STEP":
@@ -68,15 +75,73 @@ const modalReducer = (state, action) => {
   }
 };
 
+// ── Build Web3Forms FormData ─────────────────────────────────────
+const buildFormData = (type, data) => {
+  const formData = new FormData();
+
+  // Core Web3Forms fields
+  formData.append("access_key", WEB3FORMS_ACCESS_KEY);
+  formData.append("redirect", "false");
+  formData.append("botcheck", "");
+  formData.append("from_name", data.fullName);
+  formData.append("name", data.fullName);
+  formData.append("email", data.email);
+  formData.append("phone", data.phone);
+  formData.append("company", data.company);
+  formData.append(
+    "timestamp",
+    new Date().toLocaleString("en-US", {
+      dateStyle: "full",
+      timeStyle: "short",
+    }),
+  );
+
+  if (type === "mandate") {
+    formData.append(
+      "subject",
+      `Buyer Mandate — ${data.company} (${data.fullName})`,
+    );
+    formData.append("designation", data.title);
+    formData.append("country", data.country);
+    formData.append("registration_number", data.registrationNumber);
+    formData.append("products", (data.products || []).join(", "));
+    formData.append("volume_bbl", Number(data.volume).toLocaleString());
+    formData.append("delivery_terms", data.deliveryTerms);
+    formData.append("destination_port", data.destinationPort);
+    formData.append("contract_duration", data.contractDuration);
+    formData.append("financial_instrument", data.financialInstrument);
+    formData.append("end_use", data.endUse);
+    formData.append("source", data.source);
+    formData.append("notes", data.notes || "None provided");
+  } else {
+    formData.append(
+      "subject",
+      `Consultation Request — ${data.company} (${data.fullName})`,
+    );
+    formData.append("contact_method", data.contactMethod);
+    formData.append("topics", (data.topics || []).join(", "));
+    formData.append("preferred_time", data.timeSlot);
+    formData.append("timezone", data.timezone);
+    formData.append("urgency", data.urgency);
+    formData.append("agenda", data.agenda || "None provided");
+  }
+
+  return formData;
+};
+
 const Modal = ({ isOpen, onClose, type = "mandate" }) => {
   const dialogRef = useRef(null);
   const [state, dispatch] = useReducer(modalReducer, {
     currentStep: 1,
     showSuccess: false,
+    submitError: null,
     formData: initialFormData,
   });
 
-  const { currentStep, showSuccess, formData } = state;
+  const { currentStep, showSuccess, submitError, formData } = state;
+
+  // Accumulates validated field values across steps so unmounted step data isn't lost
+  const validatedStepsRef = useRef({});
 
   const totalSteps = type === "mandate" ? 3 : 2;
   const progressWidth = `${(currentStep / totalSteps) * 100}%`;
@@ -119,8 +184,6 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
   // Form persistence (localStorage save/restore)
   const restoreFormData = useCallback(
     (updaterOrData) => {
-      // The hook calls: setFormData((prev) => ({ ...prev, ...newData }))
-      // So updaterOrData may be a function that expects previous state
       const newData =
         typeof updaterOrData === "function"
           ? updaterOrData(formDataRef.current)
@@ -156,6 +219,7 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
       setTimeout(() => {
         dispatch({ type: "RESET" });
         reset(initialFormData);
+        validatedStepsRef.current = {};
         clearPersistedData();
       }, 300);
     }
@@ -183,12 +247,11 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
   // ──────────────────────────────────────────────────────────────────
   // Collect live values from the DOM + react-hook-form for non-input
   // fields (arrays, numbers set via setValue). This is the single
-  // source of truth at validation time — no stale state possible.
+  // source of truth at validation time
   // ──────────────────────────────────────────────────────────────────
   const collectLiveValues = () => {
-    const values = { ...formData }; // start with reducer state as fallback
+    const values = { ...formData };
 
-    // Overwrite with actual DOM values for all registered inputs
     const form = dialogRef.current?.querySelector(".modal-content");
     if (form) {
       const inputs = form.querySelectorAll("input, select, textarea");
@@ -204,26 +267,22 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
       });
     }
 
-    // Arrays and non-DOM fields stay from formData (products, topics, etc.)
     return values;
   };
 
   // ──────────────────────────────────────────────────────────────────
-  // VALIDATION — collects live DOM values, runs Valibot safeParse on
-  // the current step's schema, maps issues → react-hook-form setError
+  // VALIDATION
   // ──────────────────────────────────────────────────────────────────
   const validateCurrentStep = () => {
     const schema = getSchemaForStep(type, currentStep);
     const liveValues = collectLiveValues();
 
-    // Pick only this step's fields
     const stepKeys = Object.keys(schema.entries);
     const stepValues = {};
     stepKeys.forEach((key) => {
       stepValues[key] = liveValues[key];
     });
 
-    // Clear this step's errors before re-validating
     clearErrors(stepKeys);
 
     const result = v.safeParse(schema, stepValues);
@@ -238,8 +297,10 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
       return false;
     }
 
-    // Sync validated values back to formData so persistence saves them
     dispatch({ type: "UPDATE_FORM_DATA", payload: stepValues });
+
+    // Persist validated values so they survive when this step unmounts
+    validatedStepsRef.current = { ...validatedStepsRef.current, ...stepValues };
 
     return true;
   };
@@ -248,7 +309,6 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
 
   const handleNext = () => {
     if (!validateCurrentStep()) {
-      // Scroll to first error
       setTimeout(() => {
         const el = document.querySelector(".error");
         if (el) {
@@ -274,17 +334,17 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
     }
   };
 
-  // ── Submit (final step) ────────────────────────────────────────────
+  // ── Submit ────────────────────────────────
 
   const handleSubmit = async () => {
     // Validate the last step first
     if (!validateCurrentStep()) return;
 
-    // Full-form safety net using live values
+    // Full-form safety net using accumulated validated step data
     const completeSchema =
       type === "mandate" ? completeMandateSchema : completeSpeakSchema;
-    const liveValues = collectLiveValues();
-    const result = v.safeParse(completeSchema, liveValues);
+    const allValidatedData = { ...validatedStepsRef.current };
+    const result = v.safeParse(completeSchema, allValidatedData);
 
     if (!result.success) {
       console.error("Full validation failed:", result.issues);
@@ -297,17 +357,38 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
       return;
     }
 
+    // Clear any previous submission error
+    dispatch({ type: "SET_SUBMIT_ERROR", payload: null });
+
     try {
-      const refNum = Math.floor(100000 + Math.random() * 900000);
-      console.log("Form submitted:", { ...result.output, reference: refNum });
+      const formPayload = buildFormData(type, result.output);
 
-      // TODO: Replace with actual API call
-      // await submitFormData({ ...result.output, reference: refNum });
+      const response = await fetch(WEB3FORMS_ENDPOINT, {
+        method: "POST",
+        body: formPayload,
+      });
 
-      dispatch({ type: "SET_SUCCESS", payload: true });
-      clearPersistedData();
+      const responseData = await response.json();
+
+      if (responseData.success) {
+        dispatch({ type: "SET_SUCCESS", payload: true });
+        validatedStepsRef.current = {};
+        clearPersistedData();
+      } else {
+        console.error("Web3Forms submission error:", responseData);
+        dispatch({
+          type: "SET_SUBMIT_ERROR",
+          payload:
+            responseData.message || "Submission failed. Please try again.",
+        });
+      }
     } catch (error) {
       console.error("Form submission error:", error);
+      dispatch({
+        type: "SET_SUBMIT_ERROR",
+        payload:
+          "A network error occurred. Please check your connection and try again.",
+      });
     }
   };
 
@@ -363,6 +444,35 @@ const Modal = ({ isOpen, onClose, type = "mandate" }) => {
               <SuccessState type={type} onClose={onClose} />
             ) : (
               <>
+                {/* Honeypot field — hidden from real users, traps bots */}
+                <input
+                  type="checkbox"
+                  name="botcheck"
+                  className="hidden"
+                  style={{ display: "none" }}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+
+                {/* ── Submission Error Banner ── */}
+                {submitError && (
+                  <div
+                    className="form-error-banner"
+                    role="alert"
+                    style={{
+                      padding: "12px 16px",
+                      marginBottom: "16px",
+                      backgroundColor: "rgba(239, 68, 68, 0.08)",
+                      border: "1px solid rgba(239, 68, 68, 0.2)",
+                      borderRadius: "6px",
+                      color: "#f87171",
+                      fontSize: "14px",
+                    }}
+                  >
+                    {submitError}
+                  </div>
+                )}
+
                 {/* ── MANDATE FORMS ── */}
                 {type === "mandate" && (
                   <>

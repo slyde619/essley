@@ -6,6 +6,7 @@ export const articles = [
       "A comprehensive guide to the Soft Corporate Offer and Irrevocable Corporate Purchase Order workflow that forms the backbone of structured crude oil transactions.",
     category: "Transaction Structure",
     date: "February 2026",
+    image: "https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629149/avi/seedream-4.5_Ultra-wide_cinematic_refinery_skyline_with_distillation_towers_and_pipe_networks-0_ua4uok.avif",
     content: `
       <h3>The Foundation of Structured Trading</h3>
       <p>The SCO (Soft Corporate Offer) to ICPO (Irrevocable Corporate Purchase Order) process represents the cornerstone of professional crude oil trading. This systematic approach ensures clarity, commitment, and legal protection for all parties involved in multi-million dollar transactions.</p>
@@ -30,6 +31,7 @@ export const articles = [
       "How rigorous Know Your Customer and Anti-Money Laundering protocols protect all parties in cross-border oil and gas transactions.",
     category: "Compliance",
     date: "January 2026",
+    image: "https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629151/avi/seedream-4.5_Ultra-realistic_offshore_oil_drilling_platform_standing_in_calm_ocean_water_mass-0_llvrdv.avif",
     content: `
       <h3>The Regulatory Imperative</h3>
       <p>International energy trading operates under intense regulatory scrutiny. KYC (Know Your Customer) and AML (Anti-Money Laundering) protocols are not optional—they're fundamental requirements that protect the integrity of global energy markets.</p>
@@ -54,6 +56,7 @@ export const articles = [
       "An analysis of Free on Board and Cost, Insurance & Freight delivery structures and their implications for crude oil transactions.",
     category: "Trade Terms",
     date: "January 2026",
+    image: "https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629149/avi/seedream-4.5_Ultra-wide_cinematic_refinery_skyline_with_distillation_towers_and_pipe_networks-0_ua4uok.avif",
     content: `
       <h3>Understanding Incoterms in Oil Trading</h3>
       <p>FOB (Free on Board) and CIF (Cost, Insurance & Freight) are two fundamental Incoterms that define responsibility, cost allocation, and risk transfer in crude oil transactions. Choosing the wrong term can significantly impact profitability and risk exposure.</p>
@@ -78,6 +81,7 @@ export const articles = [
       "Why professional intermediaries remain essential in facilitating secure, compliant crude oil transactions between verified counterparties.",
     category: "Industry",
     date: "December 2025",
+    image: "https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629151/avi/seedream-4.5_Ultra-realistic_offshore_oil_drilling_platform_standing_in_calm_ocean_water_mass-0_llvrdv.avif",
     content: `
       <h3>Beyond Simple Matchmaking</h3>
       <p>Professional intermediaries in crude oil trading serve far more complex functions than simple buyer-seller introductions. They act as transaction architects, compliance guardians, and risk mitigators in deals involving millions of dollars.</p>
@@ -102,6 +106,7 @@ export const articles = [
       "Best practices for authenticating proof of funds, bank guarantees, and other financial instruments in structured energy transactions.",
     category: "Risk Management",
     date: "December 2025",
+    image: "https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629149/avi/seedream-4.5_Ultra-wide_cinematic_refinery_skyline_with_distillation_towers_and_pipe_networks-0_ua4uok.avif",
     content: `
       <h3>The Foundation of Trust</h3>
       <p>Financial instrument validation is critical in crude oil trading where transaction values often exceed tens of millions of dollars. Proper authentication protects sellers from fraudulent buyers and demonstrates genuine purchasing capability.</p>

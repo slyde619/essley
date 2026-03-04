@@ -233,6 +233,20 @@ html {
   display: none;
 }
 
+/* Marquee animation */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-33.333%);
+  }
+}
+
+@utility animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
 /* Reduced motion support (accessibility) */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -68,7 +68,7 @@ export const timeline = [
     title: "Foundation",
     description:
       "Essley Trading established with focus on structured crude oil intermediation",
-    tags: ["Company Launch", "USA Focus"],
+    tags: ["Company Launch"],
   },
   {
     year: "2015",

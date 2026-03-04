@@ -1,58 +1,52 @@
-import { LazyMotion, domAnimation, m } from "framer-motion";
+import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 
 const ContactCard = ({ contact, index }) => {
   const IconComponent = contact.icon;
 
   return (
-    <LazyMotion features={domAnimation}>
-      <ScrollReveal delay={index * 0.1}>
-        <m.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: index * 0.1 }}
-          whileHover={{
-            y: -10,
-            transition: { duration: 0.3 },
-          }}
-          className="group relative h-full"
-        >
-          {/* Glow effect */}
+    <ScrollReveal delay={index * 0.1}>
+      <motion.div
+        className="group relative h-full min-h-[200px]"
+        whileHover={{ scale: 1.03 }}
+        transition={{ duration: 0.3 }}
+      >
+        {/* Glass card */}
+        <div className="relative h-full overflow-hidden rounded-sm transition-all duration-300">
+          {/* Frosted glass background */}
+          <div className="absolute inset-0 bg-card/50 backdrop-blur-md border-2 border-border/40 rounded-sm transition-all duration-300 group-hover:border-orange-500/30 group-hover:shadow-lg group-hover:shadow-orange-500/5" />
+
+          {/* Grain texture on card */}
           <div
-            className={`absolute -inset-0.5 bg-linear-to-r ${contact.gradient} rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition-all duration-500`}
+            className="absolute inset-0 opacity-[0.12] pointer-events-none rounded-sm"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='contactGrain${index}'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.2' numOctaves='3' seed='${index + 100}' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23contactGrain${index})' opacity='0.4'/%3E%3C/svg%3E")`,
+              backgroundSize: "128px 128px",
+            }}
           />
 
-          {/* Card */}
-          <div className="relative p-6 sm:p-8 rounded-2xl border border-border bg-card hover:border-primary/30 transition-all duration-300 h-full backdrop-blur-sm">
-            {/* Top gradient bar */}
-            <div
-              className={`absolute top-0 left-0 right-0 h-1 bg-linear-to-r ${contact.gradient} rounded-t-2xl`}
-            />
+          {/* Content */}
+          <div className="relative h-full flex flex-col p-8">
+            {/* Icon */}
+            <div className="mb-6">
+              <div className="w-12 h-12 flex items-center justify-center bg-foreground/8 backdrop-blur-sm transition-all duration-300 group-hover:bg-orange-500/10">
+                <IconComponent
+                  className="w-6 h-6 text-foreground/80 transition-all duration-300 group-hover:scale-110 group-hover:text-orange-600/90"
+                  strokeWidth={1.5}
+                />
+              </div>
+            </div>
 
-            <div className="flex flex-col h-full">
-              <m.div
-                className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-linear-to-br ${contact.gradient} flex items-center justify-center mb-4 sm:mb-6 relative overflow-hidden`}
-                whileHover={{
-                  rotate: [0, -10, 10, -10, 0],
-                  scale: 1.1,
-                }}
-                transition={{ duration: 0.5 }}
-              >
-                <IconComponent size={20} className="sm:w-6 sm:h-6 text-white relative z-10" />
-                {/* Shine effect */}
-                <div className="absolute inset-0 bg-white/20 transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000" />
-              </m.div>
-
-              <h3 className="font-heading text-base sm:text-lg font-bold text-foreground mb-3 sm:mb-4 group-hover:text-primary transition-colors duration-300">
+            {/* Text content */}
+            <div className="flex-1 space-y-3">
+              <h3 className="font-heading text-base font-semibold text-foreground tracking-wide leading-tight transition-colors duration-300 group-hover:text-orange-900">
                 {contact.title}
               </h3>
-
-              <div className="space-y-1.5 sm:space-y-2 mt-auto">
+              <div className="space-y-1.5">
                 {contact.details.map((detail) => (
                   <p
                     key={detail}
-                    className="text-xs sm:text-sm text-muted-foreground leading-relaxed"
+                    className="text-sm text-muted-foreground leading-relaxed"
                   >
                     {detail}
                   </p>
@@ -60,12 +54,12 @@ const ContactCard = ({ contact, index }) => {
               </div>
             </div>
 
-            {/* Bottom shine effect */}
-            <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            {/* Subtle bottom accent */}
+            <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
-        </m.div>
-      </ScrollReveal>
-    </LazyMotion>
+        </div>
+      </motion.div>
+    </ScrollReveal>
   );
 };
 

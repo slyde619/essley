@@ -4,12 +4,12 @@ import { ArrowRight } from "lucide-react";
 export const ProductCard = memo(function ProductCard({ product, onSubmitMandate }) {
   return (
     <article className="relative shrink-0 w-[300px] sm:w-[340px] md:w-[380px] lg:w-[420px] aspect-4/5 overflow-hidden rounded-lg group cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-500">
-      {/* Image as card background */}
-      <img
-        src={product.image}
-        alt={product.title}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-        loading="lazy"
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 group-hover:scale-110"
+        style={{
+          backgroundImage: `url(${product.image})`
+        }}
       />
 
       {/* Gradient overlay for better text readability */}

@@ -80,7 +80,7 @@ const Navbar = () => {
               key={link.path}
               to={link.path}
               onMouseEnter={() => handlePrefetch(link.path)}
-              className={`px-4 py-2 text-sm font-medium transition-colors duration-300 rounded-md ${
+              className={`px-4 py-2 text-xs font-medium uppercase tracking-wider transition-colors duration-300 rounded-md ${
                 location.pathname === link.path
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground"
@@ -91,7 +91,7 @@ const Navbar = () => {
           ))}
           <button
             onClick={() => openModal("mandate")}
-            className="ml-2 inline-flex items-center gap-2 px-5 py-2 bg-primary text-primary-foreground font-heading font-semibold text-sm tracking-wide rounded-md transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5"
+            className="ml-2 inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-heading font-semibold text-xs uppercase tracking-[0.15em] rounded-md transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5"
           >
             Submit Request
             <ArrowRight size={14} />
@@ -124,7 +124,7 @@ const Navbar = () => {
                   key={link.path}
                   to={link.path}
                   onTouchStart={() => handlePrefetch(link.path)}
-                  className={`px-4 py-3 text-sm font-medium transition-colors rounded-md ${
+                  className={`px-4 py-3 text-xs font-medium uppercase tracking-wider transition-colors rounded-md ${
                     location.pathname === link.path
                       ? "text-primary bg-secondary/50"
                       : "text-muted-foreground hover:text-foreground hover:bg-secondary/30"
@@ -135,7 +135,7 @@ const Navbar = () => {
               ))}
               <button
                 onClick={() => openModal("mandate")}
-                className="mt-2 inline-flex items-center justify-center gap-2 px-5 py-3 bg-primary text-primary-foreground font-heading font-semibold text-sm tracking-wide rounded-md transition-all duration-300"
+                className="mt-2 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-primary-foreground font-heading font-semibold text-xs uppercase tracking-[0.15em] rounded-md transition-all duration-300"
               >
                 Submit Request
                 <ArrowRight size={14} />

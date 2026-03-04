@@ -7,7 +7,10 @@ import { ChevronRight, Check, ArrowRight } from "lucide-react";
 
 const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState(0);
-  const [modalState, setModalState] = useState({ isOpen: false, type: "mandate" });
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    type: "mandate",
+  });
 
   const openModal = (type) => {
     setModalState({ isOpen: true, type });
@@ -20,8 +23,29 @@ const Products = () => {
   return (
     <main className="pt-24">
       {/* Header Section */}
-      <section className="py-28">
-        <div className="container mx-auto px-6">
+      <section className="relative py-28 overflow-hidden">
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: 'url(https://res.cloudinary.com/dhjmedwbx/image/upload/v1772629149/avi/seedream-4.5_Ultra-wide_cinematic_refinery_skyline_with_distillation_towers_and_pipe_networks-0_ua4uok.avif)'
+          }}
+        >
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-background/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/30 to-background/50" />
+        </div>
+
+        {/* Grain texture overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.15] pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='productsGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.8' numOctaves='4' seed='25' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23productsGrain)' opacity='0.3'/%3E%3C/svg%3E")`,
+            backgroundSize: "256px 256px",
+          }}
+        />
+
+        <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal>
             <div className="max-w-4xl">
               <span className="text-xs font-medium tracking-[0.2em] uppercase text-primary mb-4 block">
@@ -30,7 +54,7 @@ const Products = () => {
               <h1 className="font-heading text-4xl md:text-6xl font-bold text-foreground mb-8 leading-[1.1]">
                 Energy Products We Facilitate
               </h1>
-              <div className="w-16 h-0.5 bg-primary mb-8" />
+
               <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
                 We facilitate transactions across a range of crude oil and
                 refined petroleum products, each with full specification
@@ -48,8 +72,8 @@ const Products = () => {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Product Selector Rail - Sticky on desktop */}
             <div className="lg:w-64 shrink-0">
-              <div className="lg:sticky lg:top-28 space-y-2">
-                <h3 className="font-heading text-sm font-semibold text-muted-foreground tracking-wider uppercase mb-4">
+              <div className="lg:sticky lg:top-28 space-y-3">
+                <h3 className="font-heading text-sm font-semibold text-muted-foreground tracking-wider uppercase mb-4 mt-8">
                   Select Product
                 </h3>
                 {productList.map((product, i) => (
@@ -175,18 +199,20 @@ const Products = () => {
                             Specifications
                           </h4>
                           <ul className="space-y-3">
-                            {productList[selectedProduct].specs.map((spec, i) => (
-                              <motion.li
-                                key={spec}
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.5 + i * 0.05 }}
-                                className="flex items-start gap-3 text-sm text-muted-foreground"
-                              >
-                                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
-                                {spec}
-                              </motion.li>
-                            ))}
+                            {productList[selectedProduct].specs.map(
+                              (spec, i) => (
+                                <motion.li
+                                  key={spec}
+                                  initial={{ opacity: 0, x: -10 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: 0.5 + i * 0.05 }}
+                                  className="flex items-start gap-3 text-sm text-muted-foreground"
+                                >
+                                  <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                                  {spec}
+                                </motion.li>
+                              ),
+                            )}
                           </ul>
                         </div>
 
@@ -205,7 +231,8 @@ const Products = () => {
                               {productList[selectedProduct].delivery}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              Flexible delivery arrangements available based on buyer requirements
+                              Flexible delivery arrangements available based on
+                              buyer requirements
                             </p>
                           </div>
 
@@ -245,9 +272,6 @@ const Products = () => {
                           Submit Request
                           <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                         </button>
-                        <p className="mt-3 text-xs text-muted-foreground">
-                          Submit your interest for {productList[selectedProduct].name}
-                        </p>
                       </motion.div>
                     </div>
                   </div>
@@ -257,121 +281,6 @@ const Products = () => {
           </div>
 
           {/* Product Comparison Grid */}
-          <ScrollReveal delay={0.3}>
-            <div className="mt-20">
-              <h3 className="font-heading text-2xl font-bold text-foreground mb-8 text-center">
-                Quick Comparison
-              </h3>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th className="text-left py-4 px-4 font-heading text-sm font-semibold text-foreground">
-                        Product
-                      </th>
-                      <th className="text-left py-4 px-4 font-heading text-sm font-semibold text-foreground">
-                        Origin
-                      </th>
-                      <th className="text-left py-4 px-4 font-heading text-sm font-semibold text-foreground">
-                        API Gravity
-                      </th>
-                      <th className="text-left py-4 px-4 font-heading text-sm font-semibold text-foreground">
-                        Sulfur Content
-                      </th>
-                      <th className="text-left py-4 px-4 font-heading text-sm font-semibold text-foreground">
-                        Delivery
-                      </th>
-                      <th className="text-left py-4 px-4 font-heading text-sm font-semibold text-foreground">
-                        Action
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {productList.map((product, i) => (
-                      <motion.tr
-                        key={product.name}
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ delay: i * 0.1 }}
-                        viewport={{ once: true }}
-                        className={`border-b border-border/50 hover:bg-secondary/20 transition-colors ${
-                          selectedProduct === i ? "bg-primary/5" : ""
-                        }`}
-                      >
-                        <td
-                          className="py-4 px-4 cursor-pointer"
-                          onClick={() => {
-                            setSelectedProduct(i);
-                            window.scrollTo({ top: 0, behavior: "smooth" });
-                          }}
-                        >
-                          <span className="text-sm font-medium text-foreground">
-                            {product.name}
-                          </span>
-                        </td>
-                        <td
-                          className="py-4 px-4 cursor-pointer"
-                          onClick={() => {
-                            setSelectedProduct(i);
-                            window.scrollTo({ top: 0, behavior: "smooth" });
-                          }}
-                        >
-                          <span className="text-sm text-muted-foreground">
-                            {product.origin}
-                          </span>
-                        </td>
-                        <td
-                          className="py-4 px-4 cursor-pointer"
-                          onClick={() => {
-                            setSelectedProduct(i);
-                            window.scrollTo({ top: 0, behavior: "smooth" });
-                          }}
-                        >
-                          <span className="text-sm text-muted-foreground">
-                            {product.api}
-                          </span>
-                        </td>
-                        <td
-                          className="py-4 px-4 cursor-pointer"
-                          onClick={() => {
-                            setSelectedProduct(i);
-                            window.scrollTo({ top: 0, behavior: "smooth" });
-                          }}
-                        >
-                          <span className="text-sm text-muted-foreground">
-                            {product.sulfur}
-                          </span>
-                        </td>
-                        <td
-                          className="py-4 px-4 cursor-pointer"
-                          onClick={() => {
-                            setSelectedProduct(i);
-                            window.scrollTo({ top: 0, behavior: "smooth" });
-                          }}
-                        >
-                          <span className="text-sm text-muted-foreground">
-                            {product.delivery}
-                          </span>
-                        </td>
-                        <td className="py-4 px-4">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openModal("mandate");
-                            }}
-                            className="group inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground font-medium text-xs tracking-wide rounded-md transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 whitespace-nowrap"
-                          >
-                            Submit Request
-                            <ArrowRight className="w-3 h-3 transition-transform duration-300 group-hover:translate-x-1" />
-                          </button>
-                        </td>
-                      </motion.tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </ScrollReveal>
         </div>
       </section>
 

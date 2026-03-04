@@ -131,7 +131,6 @@ export default function ProductsPortfolio({ onSubmitMandate }) {
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="w-32 h-1 bg-linear-to-r from-transparent via-primary to-transparent mx-auto mb-8"
               />
 
               {/* Description */}
@@ -143,9 +142,7 @@ export default function ProductsPortfolio({ onSubmitMandate }) {
                 className="text-gray-400 text-base sm:text-lg leading-relaxed max-w-4xl mx-auto px-4"
               >
                 Essley facilitates the trading of a wide range of crude oil and
-                refined petroleum products, sourced from verified suppliers and
-                delivered to qualified buyers under transparent commercial and
-                regulatory frameworks.
+                refined petroleum products.
               </motion.p>
             </motion.div>
           </div>
