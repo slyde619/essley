@@ -49,80 +49,72 @@ const Insights = () => {
             {articles.map((article, i) => (
               <ScrollReveal key={article.slug} delay={i * 0.1}>
                 <motion.article
-                  className="group relative h-full cursor-pointer"
+                  className="group relative h-full min-h-[420px] cursor-pointer"
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.3 }}
                   onClick={() => openArticle(article)}
                 >
+                  {/* Background Image */}
+                  <div
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat rounded-sm"
+                    style={{
+                      backgroundImage: `url(${article.image})`,
+                    }}
+                  >
+                    {/* Dark overlay for text readability */}
+                    <div className="absolute inset-0 bg-background/70 rounded-sm" />
+                    <div className="absolute inset-0 bg-linear-to-b from-background/50 via-background/60 to-background/80 rounded-sm" />
+                  </div>
+
+                  {/* Grain texture overlay */}
+                  <div
+                    className="absolute inset-0 opacity-[0.15] pointer-events-none rounded-sm"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='insightGrain${i}'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.8' numOctaves='4' seed='${i + 30}' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23insightGrain${i})' opacity='0.3'/%3E%3C/svg%3E")`,
+                      backgroundSize: "256px 256px",
+                    }}
+                  />
+
                   {/* Glass card */}
-                  <div className="relative h-full overflow-hidden rounded-sm transition-all duration-300 border-2 border-border/40 group-hover:border-orange-500/30 group-hover:shadow-lg group-hover:shadow-orange-500/5">
-                    {/* Image Header */}
-                    <div className="relative h-48 overflow-hidden">
-                      <img
-                        src={article.image}
-                        alt={article.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      {/* Dark overlay for depth */}
-                      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60" />
+                  <div className="relative h-full overflow-hidden rounded-sm transition-all duration-300">
+                    {/* Frosted glass background */}
+                    <div className="absolute inset-0 bg-card/40 backdrop-blur-md border-2 border-border/40 rounded-sm transition-all duration-300 group-hover:border-orange-500/30 group-hover:shadow-lg group-hover:shadow-orange-500/5" />
 
-                      {/* Grain texture overlay on image */}
-                      <div
-                        className="absolute inset-0 opacity-[0.15] pointer-events-none"
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='insightGrain${i}'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.8' numOctaves='4' seed='${i + 30}' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23insightGrain${i})' opacity='0.3'/%3E%3C/svg%3E")`,
-                          backgroundSize: "256px 256px",
-                        }}
-                      />
-                    </div>
-
-                    {/* Content Section with Frosted Glass Background */}
-                    <div className="relative bg-card/50 backdrop-blur-md">
-                      {/* Grain texture on content */}
-                      <div
-                        className="absolute inset-0 opacity-[0.12] pointer-events-none"
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='contentGrain${i}'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.2' numOctaves='3' seed='${i + 50}' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23contentGrain${i})' opacity='0.4'/%3E%3C/svg%3E")`,
-                          backgroundSize: "128px 128px",
-                        }}
-                      />
-
-                      {/* Content */}
-                      <div className="relative flex flex-col p-8">
-                        {/* Category and Date */}
-                        <div className="flex items-center gap-3 mb-4">
-                          <span className="text-xs px-3 py-1.5 rounded-full bg-foreground/10 text-primary font-medium backdrop-blur-sm">
-                            {article.category}
-                          </span>
-                          <time className="text-xs text-muted-foreground font-medium">
-                            {article.date}
-                          </time>
-                        </div>
-
-                        {/* Title */}
-                        <h2 className="font-heading text-xl font-semibold text-foreground mb-4 leading-tight transition-colors duration-300 group-hover:text-orange-900">
-                          {article.title}
-                        </h2>
-
-                        {/* Excerpt */}
-                        <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-                          {article.excerpt}
-                        </p>
-
-                        {/* Read Article Link */}
-                        <footer className="pt-4 border-t border-border/30 transition-colors duration-300 group-hover:border-orange-500/20">
-                          <button
-                            className="inline-flex items-center gap-2 text-sm text-foreground/70 hover:text-orange-600 font-medium transition-all duration-300 group-hover:gap-3"
-                            aria-label={`Read full article: ${article.title}`}
-                          >
-                            Read Article <ArrowRight size={14} />
-                          </button>
-                        </footer>
+                    {/* Content */}
+                    <div className="relative h-full flex flex-col p-8">
+                      {/* Category and Date */}
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="text-xs px-3 py-1.5 rounded-full bg-foreground/10 text-primary font-medium backdrop-blur-sm">
+                          {article.category}
+                        </span>
+                        <time className="text-xs text-muted-foreground font-medium">
+                          {article.date}
+                        </time>
                       </div>
-                    </div>
 
-                    {/* Subtle bottom accent */}
-                    <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      {/* Title */}
+                      <h2 className="font-heading text-xl font-semibold text-foreground mb-4 leading-tight transition-colors duration-300 group-hover:text-orange-900">
+                        {article.title}
+                      </h2>
+
+                      {/* Excerpt */}
+                      <p className="text-sm text-muted-foreground leading-relaxed flex-1">
+                        {article.excerpt}
+                      </p>
+
+                      {/* Read Article Link */}
+                      <footer className="mt-6 pt-4 border-t border-border/30 transition-colors duration-300 group-hover:border-orange-500/20">
+                        <button
+                          className="inline-flex items-center gap-2 text-sm text-foreground/70 hover:text-orange-600 font-medium transition-all duration-300 group-hover:gap-3"
+                          aria-label={`Read full article: ${article.title}`}
+                        >
+                          Read Article <ArrowRight size={14} />
+                        </button>
+                      </footer>
+
+                      {/* Subtle bottom accent */}
+                      <div className="absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-orange-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
                   </div>
                 </motion.article>
               </ScrollReveal>

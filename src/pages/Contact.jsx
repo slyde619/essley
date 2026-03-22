@@ -22,7 +22,7 @@ const Contact = () => {
     {
       icon: Phone,
       title: "Phone & WhatsApp",
-      details: ["+1 XXX XXX XXXX", "Available Mon-Fri"],
+      details: ["+1 564 212 5986", "Available Mon-Fri"],
     },
     {
       icon: Clock,
@@ -67,7 +67,7 @@ const Contact = () => {
         >
           {/* Dark overlay for text readability */}
           <div className="absolute inset-0 bg-background/60" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/50 to-background/70" />
+          <div className="absolute inset-0 bg-linear-to-b from-background/30 via-background/50 to-background/70" />
         </div>
 
         {/* Grain texture overlay */}
@@ -86,7 +86,8 @@ const Contact = () => {
                 Contact Information
               </h2>
               <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                Multiple channels to reach our team for your crude oil trading inquiries
+                Multiple channels to reach our team for your crude oil trading
+                inquiries
               </p>
             </div>
           </ScrollReveal>

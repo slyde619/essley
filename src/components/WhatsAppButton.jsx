@@ -4,9 +4,9 @@ import { useState } from "react";
 const WhatsAppButton = () => {
   const [hovered, setHovered] = useState(false);
 
-  const phoneNumber = "15695641884";
+  const phoneNumber = "15642125986";
   const message = encodeURIComponent(
-    "Hello Essley Trading, I would like to discuss a crude oil transaction.",
+    "Hello Essley Trading, I would like to discuss a buisness transaction.",
   );
 
   return (
@@ -27,7 +27,10 @@ const WhatsAppButton = () => {
         className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-primary flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 animate-pulse-glow"
         aria-label="Chat on WhatsApp"
       >
-        <MessageCircle size={20} className="md:w-6 md:h-6 text-primary-foreground" />
+        <MessageCircle
+          size={20}
+          className="md:w-6 md:h-6 text-primary-foreground"
+        />
       </a>
     </div>
   );
